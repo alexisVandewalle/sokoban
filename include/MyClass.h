@@ -9,8 +9,9 @@ namespace soko
      */
     class MyClass
     {
-    public:
-        void doSomething();
+        private:
+        public:
+            void doSomething();
     };
 }
 
