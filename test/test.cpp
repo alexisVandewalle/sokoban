@@ -1,24 +1,148 @@
 #include "test.h"
 #include <iostream>
 #include <cstdlib>
+#include "Map.h"
+#include <assert.h>
+#include <sstream>
+#include <bits/stdc++.h>
 
 using namespace std;
 using namespace test;
+using namespace soko;
 
 int test::testSokoban(){
     cout << "Hello world!" << endl;
     return 0; 
 }
 
+int test::testMapLoadSave(int argc, char* argv[]){
+    if(argc != 3){
+        cerr << "Invalid number of arguments" << endl;
+        return EXIT_FAILURE;
+    }
+    string filePath(argv[1]);
+    
+    cout << "test function to get line and column number of a map" << endl;
+    vector<int> lineCol(Map::getNLineColMap(argv[1]));
+    assert((lineCol[0]==7) && "test function to get line number");
+    assert((lineCol[1]==9) && "test function to get column number");
+
+    cout << "test function to load a sokoban map" << endl;
+    Map map(filePath); 
+    assert(map.getNLines()==7);
+    assert(map.getNCol()==9);
+    assert(map.getTitle()=="testMap");
+    assert(map.getNTarget()==3);
+    assert(map.getNBoxOnTarget()==1);
+    vector<int> charPos = map.getCharacterPos();
+    assert(charPos.size()==2);
+    assert(charPos[0]==4 && charPos[1]==2);
+
+    cout << "test function to display map" << endl;
+    map.show();
+
+    cout << "test function to save a map" << endl;
+    string saveFilePath(argv[2]);
+    map.save(saveFilePath);
+    return EXIT_SUCCESS; 
+}
+
+int test::testMapMove(int argc, char* argv[]){
+
+    
+    MoveType move = static_cast<MoveType>(*argv[1]);
+    
+    
+    string map1_1,map_1_2,map2_1,map2_2,map2_3,map2_4,map2_5,map3,map4_1,map4_2,map4_3,map4_4,map4_5,map5;
+    // tests map for a character not on a target
+    vector<string> mapsStr = {"# @#", "# @##","# @$#","#@$$ #","#@$* #","#@$. #", "#@$  #", "#@. #", "# @*#","#@*$ #", "#@** #", "#@*. #", "#@*   #", "#@ #"};
+    vector<string> expMaps = {"# @#", "# @##","# @$#","#@$$ #","#@$* #","# @* #", "# @$ #", "# + #", "# @*#","#@*$ #", "#@** #", "# +* #", "# +$  #", "# @#"};
+    // tests map for a character on a target
+    vector<string> mapsStr2 = {"# +#", "# +##","# +$#","#+$$ #","#+$* #","#+$. #", "#+$  #", "#+. #", "# +*#","#+*$ #", "#+** #", "#+*. #", "#+*   #", "#+ #"};
+    vector<string> expMaps2 = {"# +#", "# +##","# +$#","#+$$ #","#+$* #","#.@* #", "#.@$ #", "#.+ #", "# +*#","#+*$ #", "#+** #", "#.+* #", "#.+$  #", "#.@#"};
+
+    // all tests and expected maps
+    mapsStr.insert(mapsStr.end(), mapsStr2.begin(), mapsStr2.end());
+    expMaps.insert(expMaps.end(), expMaps2.begin(), expMaps2.end());
+    
+    cout << "test move for each map:" << endl;
+    for(int i=0; i<mapsStr.size(); i++){
+        cout << "input/output/expected - map:" << i << endl;
+        
+        // init map - flip map for LEFT and UP direction
+        if(move==LEFT || move==UP){
+            reverse(mapsStr[i].begin(), mapsStr[i].end());
+            reverse(expMaps[i].begin(), expMaps[i].end());
+        }
+        stringstream mapStrI(mapsStr[i]);
+        Map map(mapStrI);
+        cout << map.toString()<<endl;
+        vector<int> initPosV = map.getCharacterPos();
+        int initPos = initPosV[1];
+        
+        // transpose map if necessary
+        if(move==UP || move==DOWN){
+            map.transpose();
+        }
+
+        // call function to move character
+        int moveStatus = map.move(move);
+        
+        // verifications
+        
+        // check Position update
+        vector<int> endPosV = map.getCharacterPos();
+        int endPos;
+        if(move==UP || move==DOWN){
+            assert(endPosV[1]==0);
+            endPos = endPosV[0];
+        }else{
+            assert(endPosV[0]==0);
+            endPos = endPosV[1];
+        }
+        if(moveStatus==MOVE_OK){
+            if(move==UP || move==LEFT)
+                assert(endPos==(initPos-1));
+            else
+                assert(endPos==(initPos+1));
+
+        }else{
+            assert(endPos==initPos);
+        }
+
+        if(move==UP || move==DOWN){
+            map.transpose();
+        }
+        cout << map.toString() << endl << expMaps[i] << endl << endl;
+        // check map is expected one
+        assert(map.toString()==expMaps[i]);
+
+        // check move status is expected one
+        if(expMaps[i]==mapsStr[i]){
+            assert(moveStatus==MOVE_KO);
+        }else{
+            assert(moveStatus==MOVE_OK);
+        }
+
+        // check number of box on target is as expected
+        int nTargetBoxExp = count(expMaps[i].begin(), expMaps[i].end(), static_cast<char>(BOX_ON_TARGET));
+        assert(nTargetBoxExp==map.getNBoxOnTarget());
+    }    
+
+    return EXIT_SUCCESS;
+}
+
 void test::printHelp(string& progName){
     cout << "This is the program to launch test for the sokoban application" << endl;
     cout << "Usage: " << progName << " testName" << endl;
     cout << endl << "Available tests:" << endl;
+    cout << " * testMapLoadSave" << endl;
+    cout << " * testMapMove" << endl;
 }
 
-int main(int argc, char**argv){
+int main(int argc, char* argv[]){
     string progName(argv[0]); 
-    if(argc != 2){
+    if(argc < 2){
         printHelp(progName);
         return EXIT_FAILURE;
     }
@@ -26,9 +150,12 @@ int main(int argc, char**argv){
     if(arg=="--help"){
         printHelp(progName);
         return EXIT_SUCCESS;
-    }else if(arg=="testSokoban"){
-        cout << "Executing test sokoban..." << endl;
-        return testSokoban();
+    }else if(arg=="testMapLoadSave"){
+        cout << "Executing " << arg << endl;
+        return testMapLoadSave(argc-1, argv+1);
+    }else if(arg=="testMapMove"){
+        cout << "Executing " << arg << endl;
+        return testMapMove(argc-1, argv+1); 
     }else{
         cerr << "Unknown test name" << endl;
         return EXIT_FAILURE;
