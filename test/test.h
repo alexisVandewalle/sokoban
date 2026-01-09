@@ -34,6 +34,8 @@ namespace test
      * @return test status
      */
     int testMapMove(int argc, char* argv[]);
+
+    int testGame(int argc, char* argv[]);
 }
 
 #endif /* TEST_H */

@@ -23,6 +23,7 @@ namespace soko
             vector<int> characterPos;
             vector<BlockType> map;
             string title;
+            string otherMetadata;
             
             /**
              * Initialize map properties from input stream
@@ -74,6 +75,11 @@ namespace soko
              * Get title of the map
              */
             string getTitle();
+
+            /**
+             * Get metadata that has not been parsed by constructor
+             */
+            string getOtherMetadata();
 
             /**
              * Move character to the provided position

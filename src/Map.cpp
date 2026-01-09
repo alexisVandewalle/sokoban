@@ -21,6 +21,9 @@ string Map::getTitle(){
     return title;
 }
 
+string Map::getOtherMetadata(){
+    return otherMetadata;
+}
 int Map::getNBoxOnTarget(){
     return nBoxOnTarget;
 }
@@ -253,6 +256,8 @@ void Map::init(istream& inStream){
             string metaDataType(line.substr(0, sepPos));
             if(metaDataType=="title"){
                 title = line.substr(sepPos+1);
+            }else{
+                otherMetadata += line + "\n";
             }
         }else{
             // handling map definition

@@ -19,16 +19,20 @@ namespace soko
         private:
             unique_ptr<Map> map;
             vector<MoveType> moveSeq;
-            bool isFinished;
-            bool isLocked;
-            int nMoves;
+            istream* userInput;
+            bool isFinished = false;
+            bool isLocked = false;
+            bool exitLoop = false;
+            string mapFilePath;
+            double solveDuration = 0.0;
 
         public:
-            Game(string mapPath);
+            Game(string mapPath, istream* inStream);
             void gameLoop();
             void nextTurn();
             void saveScores();
             void stop();
+            void gameMenu();
     };
 }
 

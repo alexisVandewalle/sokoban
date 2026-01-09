@@ -7,8 +7,8 @@ namespace soko
     enum MoveType
     {
         LEFT = 'H',
-        UP = 'J',
-        DOWN = 'K',
+        UP = 'K',
+        DOWN = 'J',
         RIGHT = 'L'
     };
 }
