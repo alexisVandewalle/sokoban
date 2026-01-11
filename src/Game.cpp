@@ -42,12 +42,18 @@ void Game::gameLoop(){
             char moveChr = cmd[0];
             if(moveChr==UP || moveChr==DOWN || moveChr==LEFT || moveChr==RIGHT){
                 moveStatus = map->move(static_cast<MoveType>(moveChr));
+                if(moveStatus==MOVE_OK && map->isWin()){
+                    exitLoop = true;
+                }
+            }else{
+                cout << "invalid command or move, enter 'menu' to show valid command" << endl; 
+                sleep(1.0);
             }
         }else if(cmd=="menu"){
             gameMenu();
         }
         else{
-            cout << "invalid move, valid command enter help to show help" << endl; 
+            cout << "invalid command or move, enter 'menu' to show valid command" << endl; 
             sleep(1.0);
         }
         
@@ -61,8 +67,8 @@ void Game::nextTurn(){
 void Game::saveScores(){
 }
 
-void Game::saveGame(){
-}
+//void Game::saveGame(){
+//}
 
 void Game::stop(){
 }
