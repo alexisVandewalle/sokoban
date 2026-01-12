@@ -28,14 +28,17 @@ namespace test
     int testMapLoadSave(int argc, char* argv[]);
 
     /**
-     * Test all possible moves performed on a map
+     * Test a given move on a map (all cases are tested)
      * @param argc number of arguments of the test (including test name)
-     * @param argv arguments passed to the test (test name should be the first argument)
+     * @param argv arguments passed to the test (first argument should be the move to test)
      * @return test status
      */
     int testMapMove(int argc, char* argv[]);
 
-    int testGame(int argc, char* argv[]);
+    /**
+     * Load a map and launch an interactive game
+     */
+    int testInteractiveGame(int argc, char* argv[]);
 }
 
 #endif /* TEST_H */
