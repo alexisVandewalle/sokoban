@@ -169,9 +169,9 @@ int main(int argc, char* argv[]){
     }else if(arg=="testMapMove"){
         cout << "Executing " << arg << endl;
         return testMapMove(argc-1, argv+1); 
-    }else if(arg=="testGame"){
+    }else if(arg=="testInteractiveGame"){
         cout << "Executing " << arg << endl;
-        return testGame(argc-1, argv+1); 
+        return testInteractiveGame(argc-1, argv+1); 
     }else{
         cerr << "Unknown test name" << endl;
         return EXIT_FAILURE;
