@@ -210,13 +210,18 @@ bool Map::isWin(){
 
 void Map::save(string filePath){
     ofstream fileToSave(filePath);
+    save(fileToSave);
+    fileToSave.close();
+
+}
+
+void Map::save(ofstream& fileToSave){
     // write map
     fileToSave << toString() << endl << endl;
     // write metada
     fileToSave << "title:" << title << endl;
-    fileToSave.close();
-
 }
+
 
 Map::Map(istream& inStream){
     init(inStream);

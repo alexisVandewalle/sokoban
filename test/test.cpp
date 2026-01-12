@@ -136,11 +136,14 @@ int test::testMapMove(int argc, char* argv[]){
 int test::testGame(int argc, char* argv[]){
     string mapPath(argv[1]);
     cout << "Initialize game" << endl;
-    Game game(mapPath, &cin);
-    cout << "entering game loop:" << endl;
+    Game game(mapPath);
+    cout << "Entering game loop:" << endl;
     game.gameLoop();
+    cout << "Score:" << endl;
+    cout << game.getScore() << endl;
     return EXIT_SUCCESS;
 }
+
 void test::printHelp(string& progName){
     cout << "This is the program to launch test for the sokoban application" << endl;
     cout << "Usage: " << progName << " testName" << endl;

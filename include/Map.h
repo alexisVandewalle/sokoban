@@ -103,6 +103,7 @@ namespace soko
 
 
             void save(string filePath);
+            void save(ofstream& fileToSave);
             
             /**
              * Change orientation of the map

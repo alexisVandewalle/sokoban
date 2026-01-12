@@ -2,12 +2,18 @@
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
+#include <chrono>
+#include <fstream>
 
 using namespace std;
+using namespace std::chrono;
 using namespace soko;
 
-Game::Game(string mapPath, istream* inStream){
-    userInput = inStream;
+Game::Game(string mapPath){
+    init(mapPath);
+}
+
+void Game::init(string mapPath){
     mapFilePath = mapPath;
     map = unique_ptr<Map>(new Map(mapPath));
     string otherMetadata(map->getOtherMetadata());
@@ -20,37 +26,52 @@ Game::Game(string mapPath, istream* inStream){
         string metaDataType(line.substr(0, sepPos));
         if(metaDataType=="moves"){
             moveListStr = line.substr(sepPos+1);
+        }else if(metaDataType=="solveDuration"){
+            solveDuration = stod(line.substr(sepPos+1));
         }
     }
     moveSeq.resize(moveListStr.length());
     for(int i=0; i<moveListStr.length(); i++){
         moveSeq[i] = static_cast<MoveType>(moveListStr[i]);  
     }
-    isFinished = map->isWin();
+    isWin = map->isWin();
 }
 
 void Game::gameLoop(){
     string cmd;
     MoveType move;
     int moveStatus;
+    auto start = high_resolution_clock::now();
+    time_point<high_resolution_clock> stop;
     while(!exitLoop){
         system("clear");
         map->show();
         cout << "Enter next move:" << endl;
-        (*userInput) >> cmd;
+        cin >> cmd;
         if(cmd.length()==1){
             char moveChr = cmd[0];
             if(moveChr==UP || moveChr==DOWN || moveChr==LEFT || moveChr==RIGHT){
                 moveStatus = map->move(static_cast<MoveType>(moveChr));
-                if(moveStatus==MOVE_OK && map->isWin()){
-                    exitLoop = true;
+                if(moveStatus==MOVE_OK){
+                    moveSeq.push_back(static_cast<MoveType>(moveChr));
+                    if(map->isWin()){
+                        stop = high_resolution_clock::now();
+                        auto intervalSec = duration_cast<microseconds>(stop - start);
+                        solveDuration += intervalSec.count()/1e6;
+                        isWin = true;
+                        exitLoop = true;
+                    }
                 }
             }else{
                 cout << "invalid command or move, enter 'menu' to show valid command" << endl; 
                 sleep(1.0);
             }
         }else if(cmd=="menu"){
+            stop = high_resolution_clock::now();
+            auto intervalSec = duration_cast<microseconds>(stop - start);
+            solveDuration += intervalSec.count()/1e6;
             gameMenu();
+            start = high_resolution_clock::now();
         }
         else{
             cout << "invalid command or move, enter 'menu' to show valid command" << endl; 
@@ -61,16 +82,24 @@ void Game::gameLoop(){
     
 }
 
-void Game::nextTurn(){
+string Game::getScore(){
+    string out;
+    string moveStr(moveSeq.begin(), moveSeq.end());
+    out += to_string(solveDuration) + "," + moveStr + "," + to_string(moveSeq.size());
+    return out;
 }
 
-void Game::saveScores(){
-}
-
-//void Game::saveGame(){
-//}
-
-void Game::stop(){
+void Game::saveGame(){
+    string homePath(getenv("HOME"));
+    string dirSoko = homePath + "/.soko";
+    string cmd = "mkdir -p " + dirSoko;
+    system(cmd.c_str());
+    ofstream gameFile(dirSoko + "/sokoCheckPoint.txt");
+    map->save(gameFile);
+    string moveStr(moveSeq.begin(), moveSeq.end());
+    gameFile << "moves:" << moveStr << endl;
+    gameFile << "solveDuration:" << solveDuration << endl;
+    gameFile.close();
 }
 
 void Game::gameMenu(){
@@ -80,24 +109,31 @@ void Game::gameMenu(){
     cout << "Stats:" << endl;
     cout << "* number of moves: " << moveSeq.size() << endl;
     cout << "* move history: " << string(moveSeq.begin(), moveSeq.end()) << endl; 
-    cout << "* duration: " << string(moveSeq.begin(), moveSeq.end()) << endl << endl; 
-    cout << endl << "Commands:" << endl;
+    cout << "* duration: " << solveDuration << endl << endl; 
+    cout << endl << "Move commands:" << endl;
+    cout << "* LEFT: " << static_cast<char>(LEFT)<< endl; 
+    cout << "* RIGHT: " << static_cast<char>(RIGHT)<< endl; 
+    cout << "* DOWN: " << static_cast<char>(DOWN)<< endl; 
+    cout << "* UP: " << static_cast<char>(UP)<< endl; 
+    cout << endl << "Menu options:" << endl;
     cout << "* 1. resume" << endl;
-    cout << "* 2. restart" << endl;
-    cout << "* 3. save and go back to start menu" << endl;
+    cout << "* 2. restart from last checkpoint" << endl;
+    cout << "* 3. save checkpoint and go back to start menu" << endl;
+    cout << endl << "Option selected:" << endl;
+
 
     string cmd;
     bool validCmd(false);
     while(!validCmd){
-        (*userInput) >> cmd; 
+        cin >> cmd; 
         validCmd = true;
         if(cmd=="1"){
         }else if(cmd=="2"){
             moveSeq.clear();
-            map = unique_ptr<Map>(new Map(mapFilePath));
-            solveDuration = 0.0;
+            init(mapFilePath);
         }else if(cmd=="3"){
             exitLoop = true;
+            saveGame();
         }else{
             validCmd = false;
         }
