@@ -23,6 +23,7 @@ namespace soko
             vector<int> characterPos;
             vector<BlockType> map;
             string title;
+            string otherMetadata;
             
             /**
              * Initialize map properties from input stream
@@ -76,6 +77,11 @@ namespace soko
             string getTitle();
 
             /**
+             * Get metadata that has not been parsed by constructor
+             */
+            string getOtherMetadata();
+
+            /**
              * Move character to the provided position
              * @param direction
              * @return MOVE_OK or MOVE_KO depending if the move can be performed
@@ -95,8 +101,11 @@ namespace soko
              */
             bool isWin();
 
-
+            /**
+             * Save curent map to given file
+             */
             void save(string filePath);
+            void save(ofstream& fileToSave);
             
             /**
              * Change orientation of the map

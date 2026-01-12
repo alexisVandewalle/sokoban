@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <sstream>
 #include <bits/stdc++.h>
+#include "Game.h"
 
 using namespace std;
 using namespace test;
@@ -132,12 +133,24 @@ int test::testMapMove(int argc, char* argv[]){
     return EXIT_SUCCESS;
 }
 
+int test::testInteractiveGame(int argc, char* argv[]){
+    string mapPath(argv[1]);
+    cout << "Initialize game" << endl;
+    Game game(mapPath);
+    cout << "Entering game loop:" << endl;
+    game.gameLoop();
+    cout << "Score:" << endl;
+    cout << game.getScore() << endl;
+    return EXIT_SUCCESS;
+}
+
 void test::printHelp(string& progName){
     cout << "This is the program to launch test for the sokoban application" << endl;
     cout << "Usage: " << progName << " testName" << endl;
     cout << endl << "Available tests:" << endl;
     cout << " * testMapLoadSave" << endl;
     cout << " * testMapMove" << endl;
+    cout << " * testInteractiveGame" << endl;
 }
 
 int main(int argc, char* argv[]){
@@ -156,6 +169,9 @@ int main(int argc, char* argv[]){
     }else if(arg=="testMapMove"){
         cout << "Executing " << arg << endl;
         return testMapMove(argc-1, argv+1); 
+    }else if(arg=="testInteractiveGame"){
+        cout << "Executing " << arg << endl;
+        return testInteractiveGame(argc-1, argv+1); 
     }else{
         cerr << "Unknown test name" << endl;
         return EXIT_FAILURE;

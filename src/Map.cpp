@@ -21,6 +21,9 @@ string Map::getTitle(){
     return title;
 }
 
+string Map::getOtherMetadata(){
+    return otherMetadata;
+}
 int Map::getNBoxOnTarget(){
     return nBoxOnTarget;
 }
@@ -207,13 +210,18 @@ bool Map::isWin(){
 
 void Map::save(string filePath){
     ofstream fileToSave(filePath);
+    save(fileToSave);
+    fileToSave.close();
+
+}
+
+void Map::save(ofstream& fileToSave){
     // write map
     fileToSave << toString() << endl << endl;
     // write metada
     fileToSave << "title:" << title << endl;
-    fileToSave.close();
-
 }
+
 
 Map::Map(istream& inStream){
     init(inStream);
@@ -253,6 +261,8 @@ void Map::init(istream& inStream){
             string metaDataType(line.substr(0, sepPos));
             if(metaDataType=="title"){
                 title = line.substr(sepPos+1);
+            }else{
+                otherMetadata += line + "\n";
             }
         }else{
             // handling map definition
