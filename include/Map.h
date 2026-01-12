@@ -101,7 +101,9 @@ namespace soko
              */
             bool isWin();
 
-
+            /**
+             * Save curent map to given file
+             */
             void save(string filePath);
             void save(ofstream& fileToSave);
             

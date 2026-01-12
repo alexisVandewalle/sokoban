@@ -46,7 +46,7 @@ void Game::gameLoop(){
     while(!exitLoop){
         system("clear");
         map->show();
-        cout << "Enter next move:" << endl;
+        cout << "Enter next move or 'menu':" << endl;
         cin >> cmd;
         if(cmd.length()==1){
             char moveChr = cmd[0];

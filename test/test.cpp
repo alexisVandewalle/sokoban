@@ -133,7 +133,7 @@ int test::testMapMove(int argc, char* argv[]){
     return EXIT_SUCCESS;
 }
 
-int test::testGame(int argc, char* argv[]){
+int test::testInteractiveGame(int argc, char* argv[]){
     string mapPath(argv[1]);
     cout << "Initialize game" << endl;
     Game game(mapPath);
@@ -150,7 +150,7 @@ void test::printHelp(string& progName){
     cout << endl << "Available tests:" << endl;
     cout << " * testMapLoadSave" << endl;
     cout << " * testMapMove" << endl;
-    cout << " * testGame" << endl;
+    cout << " * testInteractiveGame" << endl;
 }
 
 int main(int argc, char* argv[]){
