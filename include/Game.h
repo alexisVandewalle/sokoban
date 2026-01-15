@@ -6,8 +6,10 @@
 #include <memory>
 #include "Map.h"
 #include "MoveType.h"
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace soko
 {
@@ -23,6 +25,8 @@ namespace soko
             bool exitLoop = false;
             string mapFilePath;
             double solveDuration = 0.0;
+            time_point<high_resolution_clock> start;
+            time_point<high_resolution_clock> stop;
 
             void init(string mapPath);
         public:
@@ -54,6 +58,51 @@ namespace soko
              * Display and manage game menu
              */
             void gameMenu();
+            
+            /**
+             * perform given move
+             */
+            void nextTurn(MoveType move);
+
+            /**
+             * Get string representation of the map
+             */
+            string mapToString();
+
+            /**
+             * Restart the game from last checkpoint
+             */
+            void restartFromLastCheckpoint();
+
+            /**
+             * pause timer used to count solve duration
+             */
+            void pause();
+
+            /**
+             * Resume timer used to count solve duration
+             */
+            void resume();
+
+            /**
+             * Get sequence of moves already performed as a string sequence
+             */
+            string getMoveSeq();
+
+            /**
+             * Get number of moves
+             */
+            int getNMove();
+
+            /**
+             * Get solve duration of the sokoban
+             */
+            double getSolveDuration();
+
+            /**
+             * Return variable indicating whether sokoban is solved
+             */
+            bool getIsWin();
     };
 }
 

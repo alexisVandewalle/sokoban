@@ -212,7 +212,6 @@ void Map::save(string filePath){
     ofstream fileToSave(filePath);
     save(fileToSave);
     fileToSave.close();
-
 }
 
 void Map::save(ofstream& fileToSave){

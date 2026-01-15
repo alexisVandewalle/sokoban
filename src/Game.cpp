@@ -41,8 +41,7 @@ void Game::gameLoop(){
     string cmd;
     MoveType move;
     int moveStatus;
-    auto start = high_resolution_clock::now();
-    time_point<high_resolution_clock> stop;
+    resume();
     while(!exitLoop){
         system("clear");
         map->show();
@@ -67,11 +66,9 @@ void Game::gameLoop(){
                 sleep(1.0);
             }
         }else if(cmd=="menu"){
-            stop = high_resolution_clock::now();
-            auto intervalSec = duration_cast<microseconds>(stop - start);
-            solveDuration += intervalSec.count()/1e6;
+            pause();
             gameMenu();
-            start = high_resolution_clock::now();
+            resume();
         }
         else{
             cout << "invalid command or move, enter 'menu' to show valid command" << endl; 
@@ -129,8 +126,7 @@ void Game::gameMenu(){
         validCmd = true;
         if(cmd=="1"){
         }else if(cmd=="2"){
-            moveSeq.clear();
-            init(mapFilePath);
+            restartFromLastCheckpoint();
         }else if(cmd=="3"){
             exitLoop = true;
             saveGame();
@@ -138,4 +134,50 @@ void Game::gameMenu(){
             validCmd = false;
         }
     }
+}
+
+void Game::nextTurn(MoveType move){
+    int moveStatus = map->move(move);
+    if(moveStatus==MOVE_OK){
+        moveSeq.push_back(move);
+        if(map->isWin()){
+            isWin = true;
+        }
+    }
+}
+
+string Game::mapToString(){
+    return map->toString();
+}
+
+void Game::restartFromLastCheckpoint(){
+    moveSeq.clear();
+    init(mapFilePath);
+}
+
+void Game::pause(){
+    stop = high_resolution_clock::now();
+    auto intervalSec = duration_cast<microseconds>(stop - start);
+    solveDuration += intervalSec.count()/1e6;
+}
+
+void Game::resume(){
+    start = high_resolution_clock::now();
+}
+
+string Game::getMoveSeq(){
+    string out(moveSeq.begin(), moveSeq.end());
+    return out;
+}
+
+int Game::getNMove(){
+    return moveSeq.size();
+}
+
+double Game::getSolveDuration(){
+    return solveDuration;
+}
+
+bool Game::getIsWin(){
+    return isWin;
 }
