@@ -30,10 +30,8 @@ SokobanWindow::SokobanWindow(int argc, char** argv){
     pageMenuGame.attach(labelStats, 0, 4);
     labelNMove.set_label("* Number of moves: " + to_string(game->getNMove()));
     pageMenuGame.attach(labelNMove, 0, 5);
-    labelMoveHist.set_label("* Move history: " + game->getMoveSeq());
-    pageMenuGame.attach(labelMoveHist, 0, 6);
     labelDuration.set_label("* Solve duration: " + to_string(game->getSolveDuration()));
-    pageMenuGame.attach(labelDuration, 0, 7);
+    pageMenuGame.attach(labelDuration, 0, 6);
     resumeBtn.set_label("Resume");
     restartBtn.set_label("Restart from last checkpoint");
     saveBtn.set_label("Save checkpoint and back to main menu");
@@ -71,6 +69,10 @@ SokobanWindow::SokobanWindow(int argc, char** argv){
 void SokobanWindow::updateMap(string map){
     int i=0, j=0;
     for(int k=0; k<map.length(); k++){
+        Gtk::Widget* w = gridImg.get_child_at(j,i);
+        if(w!=nullptr){
+            gridImg.remove(*w);
+        }
         Gtk::Image img;
         img.set_pixel_size(IMG_SIZE);
         switch (map[k])
@@ -153,7 +155,6 @@ void SokobanWindow::showGameMenu(){
     containerGame.set_visible_child(pageMenuGame);
     game->pause();
     labelNMove.set_label("* Number of moves: " + to_string(game->getNMove()));
-    labelMoveHist.set_label("* Move history: " + game->getMoveSeq());
     labelDuration.set_label("* Solve duration: " + to_string(game->getSolveDuration()));
 }
 

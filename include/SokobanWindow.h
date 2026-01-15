@@ -13,7 +13,7 @@
 #include <string>
 #include <gtkmm/label.h>
 
-#define IMG_SIZE 100
+#define IMG_SIZE 50
 
 using namespace std;
 
