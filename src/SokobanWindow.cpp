@@ -35,6 +35,7 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
     // construct page containing sokoban game
     pageGame.attach(menuButton, 0, 1);
     menuButton.set_label("Menu");
+    menuButton.set_margin(5);
 
     // construct page containg game menu
     pageMenuGame.attach(resumeBtn, 0, 0);
@@ -49,6 +50,8 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
     restartBtn.set_label("Restart from last checkpoint");
     saveBtn.set_label("Save checkpoint");
     backToMainMenuBtn.set_label("Back to main menu");
+    pageMenuGame.set_halign(Gtk::Align::CENTER);
+    pageMenuGame.set_valign(Gtk::Align::CENTER);
 
     // construct page containing scores
     pageScores.append(scoreScroller);
