@@ -69,56 +69,43 @@ SokobanWindow::SokobanWindow(int argc, char** argv){
 void SokobanWindow::updateMap(string map){
     int i=0, j=0;
     for(int k=0; k<map.length(); k++){
-        Gtk::Widget* w = gridImg.get_child_at(j,i);
-        if(w!=nullptr){
-            gridImg.remove(*w);
-        }
-        Gtk::Image img;
-        img.set_pixel_size(IMG_SIZE);
-        switch (map[k])
-        {
-            case '\n':
-                i++;
-                j = 0;
-                break;
-            case WALL:
+        if(map[k]!='\n'){
+            Gtk::Widget* w = gridImg.get_child_at(j,i);
+            if(w==nullptr){
+                Gtk::Image img;
                 gridImg.attach(img, j, i);
-                img.set(assetsPath + "wall.png");
-                j++;
-                break;
-            case CHARACTER:
-                gridImg.attach(img, j, i);
-                img.set(assetsPath + "character.png");
-                j++;
-                break;
-            case CHARACTER_ON_TARGET:
-                gridImg.attach(img, j, i);
-                img.set(assetsPath + "characterOnTarget.png");
-                j++;
-                break;
-            case BOX:
-                gridImg.attach(img, j, i);
-                img.set(assetsPath + "box.png");
-                j++;
-                break;
-            case BOX_ON_TARGET:
-                gridImg.attach(img, j, i);
-                img.set(assetsPath + "boxOnTarget.png");
-                j++;
-                break;
-            case FLOOR:
-                gridImg.attach(img, j, i);
-                img.set(assetsPath + "ground.png");
-                j++;
-                break;
-            case TARGET:
-                gridImg.attach(img, j, i);
-                img.set(assetsPath + "target.png");
-                j++;
-                break;
-            default:
-                j++;
-                break;
+                w = &img;
+            }
+            w = gridImg.get_child_at(j,i);
+            Gtk::Image* img = dynamic_cast<Gtk::Image*>(w);
+            img->set_pixel_size(IMG_SIZE);
+            switch (map[k]){
+                case WALL:
+                    img->set(assetsPath + "wall.png");
+                    break;
+                case CHARACTER:
+                    img->set(assetsPath + "character.png");
+                    break;
+                case CHARACTER_ON_TARGET:
+                    img->set(assetsPath + "characterOnTarget.png");
+                    break;
+                case BOX:
+                    img->set(assetsPath + "box.png");
+                    break;
+                case BOX_ON_TARGET:
+                    img->set(assetsPath + "boxOnTarget.png");
+                    break;
+                case FLOOR:
+                    img->set(assetsPath + "ground.png");
+                    break;
+                case TARGET:
+                    img->set(assetsPath + "target.png");
+                    break;
+            }
+            j++;
+        }else{
+            i++;
+            j = 0;
         }
     } 
 }
