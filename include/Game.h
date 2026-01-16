@@ -103,6 +103,8 @@ namespace soko
              * Return variable indicating whether sokoban is solved
              */
             bool getIsWin();
+
+            void saveScore();
     };
 }
 

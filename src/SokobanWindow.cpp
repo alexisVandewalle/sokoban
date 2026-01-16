@@ -6,11 +6,13 @@
 #include <gtkmm/error.h>
 #include <gtkmm/alertdialog.h>
 #include "exceptions.h"
+#include <fstream>
 
 using namespace soko;
 
 SokobanWindow::SokobanWindow(int argc, char** argv)
-    : pageMainMenu(Gtk::Orientation::VERTICAL, 5)
+    : pageMainMenu(Gtk::Orientation::VERTICAL, 5),
+      pageScores(Gtk::Orientation::VERTICAL, 5)
 {
     // path to images (for map display)
     assetsPath = getenv("SOKOBAN_ASSETS");
@@ -20,7 +22,7 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
 
     // construct page containing main menu of the game
     startNewGameBtn.set_label("Start new game");
-    resumeLastGameBtn.set_label("Resume last game");
+    resumeLastGameBtn.set_label("Resume last saved game");
     showScoreBtn.set_label("Show scores");
     quitBtn.set_label("Quit");
     pageMainMenu.append(startNewGameBtn);
@@ -46,10 +48,24 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
     restartBtn.set_label("Restart from last checkpoint");
     saveBtn.set_label("Save checkpoint and back to main menu");
 
+    // construct page containing scores
+    pageScores.append(scoreScroller);
+    scoreScroller.set_child(scoreTreeView);
+    scoreScroller.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
+    scoreScroller.set_expand();
+    scoreListStore = Gtk::ListStore::create(columnsScore);
+    scoreTreeView.set_model(scoreListStore);
+    scoreTreeView.append_column("Map", columnsScore.colTitle);
+    scoreTreeView.append_column("Time [s]", columnsScore.colSolveDuration);
+    scoreTreeView.append_column("Number of moves", columnsScore.colNMoves);
+    backBtn.set_label("Back to main menu");
+    pageScores.append(backBtn);
+
     // add all pages in the window
     containerGame.add(pageMainMenu);
     containerGame.add(pageGame);
     containerGame.add(pageMenuGame);
+    containerGame.add(pageScores);
     containerGame.set_visible_child(pageMainMenu);
     set_child(containerGame);
     
@@ -58,6 +74,8 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
         sigc::mem_fun(*this, &SokobanWindow::startNewGame));
     resumeLastGameBtn.signal_clicked().connect(
         sigc::mem_fun(*this, &SokobanWindow::resumeLastGame));
+    showScoreBtn.signal_clicked().connect(
+        sigc::mem_fun(*this, &SokobanWindow::showScores));
     quitBtn.signal_clicked().connect(
         sigc::mem_fun(*this, &SokobanWindow::close));
     menuButton.signal_clicked().connect(
@@ -68,6 +86,8 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
         sigc::mem_fun(*this, &SokobanWindow::restartGameFromLastCheckpoint));
     saveBtn.signal_clicked().connect(
         sigc::mem_fun(*this, &SokobanWindow::saveCheckpoint));
+    backBtn.signal_clicked().connect(
+        sigc::mem_fun(*this, &SokobanWindow::showMainMenu));
     auto controller = Gtk::EventControllerKey::create();
     controller->signal_key_pressed().connect(
         sigc::mem_fun(*this, &SokobanWindow::onKeyPressed), false);
@@ -161,10 +181,15 @@ bool SokobanWindow::onKeyPressed(guint keyval, guint keycode, Gdk::ModifierType 
                 updateMap(game->mapToString());
             }else{
                 game->pause();
-                cout << "You win!!!" << endl;
-                cout << " * Number of moves: " << game->getNMove() << endl; 
-                cout << " * Move history: " << game->getMoveSeq() << endl;
-                cout << " * Solve duration: " << game->getSolveDuration() << "s" << endl;
+                game->saveScore();
+                stringstream message;
+                message << "You win!!!" << endl;
+                message << " * Number of moves: " << game->getNMove() << endl; 
+                message << " * Move history: " << game->getMoveSeq() << endl;
+                message << " * Solve duration: " << game->getSolveDuration() << "s" << endl;
+                cout << message.str();
+                Glib::RefPtr<Gtk::AlertDialog> dialog(Gtk::AlertDialog::create(message.str()));
+                dialog->show(*this);
                 exitGame();
             }
         }
@@ -240,4 +265,36 @@ void SokobanWindow::resumeLastGame(){
         Glib::RefPtr<Gtk::AlertDialog> dialog(Gtk::AlertDialog::create(message));
         dialog->show(*this);
     }
+}
+
+void SokobanWindow::showScores(){
+    containerGame.set_visible_child(pageScores);
+    scoreListStore->clear();
+    string homePath(getenv("HOME"));
+    string filePathScore(homePath + "/.soko/scores.csv");
+    ifstream fileScore(filePathScore);
+    if(fileScore.is_open()){
+        string line;
+        while(getline(fileScore, line)){
+            stringstream ss(line);
+            string cell;
+            // parse map title
+            getline(ss, cell, ',');
+            auto row = *(scoreListStore->append());
+            row[columnsScore.colTitle] = cell;
+            //parse solve duration
+            getline(ss, cell, ',');
+            row[columnsScore.colSolveDuration] = cell;
+            // skip move sequence 
+            getline(ss, cell, ',');
+            // parse nMoves
+            getline(ss, cell, ',');
+            row[columnsScore.colNMoves] = stoi(cell);
+        }
+    }
+    fileScore.close();
+}
+
+void SokobanWindow::showMainMenu(){
+    containerGame.set_visible_child(pageMainMenu);    
 }

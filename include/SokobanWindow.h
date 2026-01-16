@@ -14,6 +14,9 @@
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
 #include <gtkmm/filedialog.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/scrolledwindow.h>
 
 #define IMG_SIZE 50
 
@@ -23,6 +26,19 @@ namespace soko
 {
     class SokobanWindow : public Gtk::Window
     {
+        //Tree model columns for scores:
+        class ModelColumnsScore : public Gtk::TreeModel::ColumnRecord
+        {
+            public:
+
+                ModelColumnsScore()
+                    { add(colTitle); add(colSolveDuration); add(colNMoves);}
+
+                Gtk::TreeModelColumn<Glib::ustring> colTitle;
+                Gtk::TreeModelColumn<Glib::ustring> colSolveDuration;
+                Gtk::TreeModelColumn<int> colNMoves;
+        };
+
         private:
             string assetsPath;
             unique_ptr<Game> game;
@@ -31,6 +47,8 @@ namespace soko
             Gtk::Box pageMainMenu;
             Gtk::Grid pageGame;
             Gtk::Grid pageMenuGame;
+            Gtk::Box pageScores;
+            Gtk::ScrolledWindow scoreScroller;
             Gtk::Button startNewGameBtn;
             Gtk::Button resumeLastGameBtn;
             Gtk::Button showScoreBtn;
@@ -42,6 +60,10 @@ namespace soko
             Gtk::Label labelNMove;
             Gtk::Label labelMoveHist;
             Gtk::Label labelDuration;
+            Gtk::TreeView scoreTreeView;
+            Glib::RefPtr<Gtk::ListStore> scoreListStore;
+            ModelColumnsScore columnsScore;
+            Gtk::Button backBtn;
             unique_ptr<Gtk::Grid> gridImg;
             Glib::RefPtr<Gtk::FileDialog> fileDialog;
 
@@ -80,6 +102,8 @@ namespace soko
             void startNewGame();
             void onMapSelected(Glib::RefPtr<Gio::AsyncResult>& result);
             void resumeLastGame();
+            void showScores();
+            void showMainMenu();
             
         public:
             /**
