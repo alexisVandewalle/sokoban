@@ -1,6 +1,7 @@
 #include "Map.h"
 #include <iostream>
 #include <fstream>
+#include "exceptions.h"
 
 using namespace std;
 using namespace soko;
@@ -228,8 +229,12 @@ Map::Map(istream& inStream){
 
 Map::Map(string filePath){
     ifstream mapFile(filePath);
-    init(mapFile);
-    mapFile.close();
+    if(mapFile.is_open()){
+        init(mapFile);
+        mapFile.close();
+    }else{
+        throw FileNotFoundException(filePath);
+    }
 }
 
 void Map::init(istream& inStream){

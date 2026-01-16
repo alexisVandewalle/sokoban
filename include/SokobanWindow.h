@@ -12,6 +12,8 @@
 #include <gtkmm/stack.h>
 #include <string>
 #include <gtkmm/label.h>
+#include <gtkmm/box.h>
+#include <gtkmm/filedialog.h>
 
 #define IMG_SIZE 50
 
@@ -26,8 +28,13 @@ namespace soko
             unique_ptr<Game> game;
             bool gamePaused;
             Gtk::Stack containerGame;
+            Gtk::Box pageMainMenu;
             Gtk::Grid pageGame;
             Gtk::Grid pageMenuGame;
+            Gtk::Button startNewGameBtn;
+            Gtk::Button resumeLastGameBtn;
+            Gtk::Button showScoreBtn;
+            Gtk::Button quitBtn;
             Gtk::Button menuButton;
             Gtk::Button resumeBtn;
             Gtk::Button restartBtn;
@@ -35,7 +42,8 @@ namespace soko
             Gtk::Label labelNMove;
             Gtk::Label labelMoveHist;
             Gtk::Label labelDuration;
-            Gtk::Grid gridImg;
+            unique_ptr<Gtk::Grid> gridImg;
+            Glib::RefPtr<Gtk::FileDialog> fileDialog;
 
             /**
              * Function called when a key is pressed
@@ -48,9 +56,9 @@ namespace soko
             void showGameMenu();
 
             /**
-             * Show page containing the sokoban puzzle
+             * Resume exiting game  showing page containing the sokoban puzzle
              */
-            void showGame();
+            void resumeGame();
 
             /**
              * Restart game from last saved checkpoint
@@ -61,16 +69,24 @@ namespace soko
              * Save current sokoban and close application
              */
             void saveCheckpoint();
+
+            /**
+             * Update display of sokoban map
+             */
+            void updateMap(string map);
+
+            void initGame(string mapPath);
+            void exitGame();
+            void startNewGame();
+            void onMapSelected(Glib::RefPtr<Gio::AsyncResult>& result);
+            void resumeLastGame();
+            
         public:
             /**
              * Create sokoban window taking path to a given map
              */
             SokobanWindow(int argc, char** argv);
 
-            /**
-             * Update display of sokoban map
-             */
-            void updateMap(string map);
     };
 }
 #endif /* SOKOBAN_WINDOW_H */

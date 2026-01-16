@@ -18,6 +18,7 @@ set(HEADERS_COMMON
     ${INCLUDE_DIR}/Map.h
     ${INCLUDE_DIR}/BlockType.h
     ${INCLUDE_DIR}/MoveType.h
+    ${INCLUDE_DIR}/exceptions.h
 )
 
 set(HEADERS 
