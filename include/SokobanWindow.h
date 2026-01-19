@@ -45,8 +45,8 @@ namespace soko
             bool gamePaused;
             Gtk::Stack containerGame;
             Gtk::Box pageMainMenu;
-            Gtk::Grid pageGame;
-            Gtk::Grid pageMenuGame;
+            Gtk::Box pageGame;
+            Gtk::Box pageMenuGame;
             Gtk::Box pageScores;
             Gtk::ScrolledWindow scoreScroller;
             Gtk::Button startNewGameBtn;

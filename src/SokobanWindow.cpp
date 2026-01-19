@@ -12,7 +12,9 @@ using namespace soko;
 
 SokobanWindow::SokobanWindow(int argc, char** argv)
     : pageMainMenu(Gtk::Orientation::VERTICAL, 5),
-      pageScores(Gtk::Orientation::VERTICAL, 5)
+      pageScores(Gtk::Orientation::VERTICAL, 5),
+      pageGame(Gtk::Orientation::VERTICAL, 5),
+      pageMenuGame(Gtk::Orientation::VERTICAL, 5)
 {
     // path to images (for map display)
     assetsPath = getenv("SOKOBAN_ASSETS");
@@ -33,22 +35,25 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
     pageMainMenu.set_margin(5);
 
     // construct page containing sokoban game
-    pageGame.attach(menuButton, 0, 1);
+    pageGame.append(menuButton);
     menuButton.set_label("Menu");
+    menuButton.set_margin(5);
 
     // construct page containg game menu
-    pageMenuGame.attach(resumeBtn, 0, 0);
-    pageMenuGame.attach(restartBtn, 0, 1);
-    pageMenuGame.attach(saveBtn, 0, 2);
-    pageMenuGame.attach(backToMainMenuBtn, 0, 3);
+    pageMenuGame.append(resumeBtn);
+    pageMenuGame.append(restartBtn);
+    pageMenuGame.append(saveBtn);
+    pageMenuGame.append(backToMainMenuBtn);
     Gtk::Label labelStats("Stats:");
-    pageMenuGame.attach(labelStats, 0, 4);
-    pageMenuGame.attach(labelNMove, 0, 5);
-    pageMenuGame.attach(labelDuration, 0, 6);
+    pageMenuGame.append(labelStats);
+    pageMenuGame.append(labelNMove);
+    pageMenuGame.append(labelDuration);
     resumeBtn.set_label("Resume");
     restartBtn.set_label("Restart from last checkpoint");
     saveBtn.set_label("Save checkpoint");
     backToMainMenuBtn.set_label("Back to main menu");
+    pageMenuGame.set_halign(Gtk::Align::CENTER);
+    pageMenuGame.set_valign(Gtk::Align::CENTER);
 
     // construct page containing scores
     pageScores.append(scoreScroller);
@@ -109,7 +114,7 @@ void SokobanWindow::initGame(string mapPath){
 
     // update sokoban map display 
     gridImg = unique_ptr<Gtk::Grid>(new Gtk::Grid);
-    pageGame.attach(*gridImg, 0, 0);
+    pageGame.append(*gridImg);
     updateMap(game->mapToString());
     gamePaused = false;
     containerGame.set_visible_child(pageGame);
