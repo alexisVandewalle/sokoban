@@ -97,7 +97,7 @@ void Game::saveGame(){
     map->save(gameFile);
     string moveStr(moveSeq.begin(), moveSeq.end());
     gameFile << "moves:" << moveStr << endl;
-    gameFile << "solveDuration:" << solveDuration << endl;
+    gameFile << "solveDuration:" << solveDuration << " s" << endl;
     gameFile.close();
 }
 
@@ -108,7 +108,7 @@ void Game::gameMenu(){
     cout << "Stats:" << endl;
     cout << "* number of moves: " << moveSeq.size() << endl;
     cout << "* move history: " << string(moveSeq.begin(), moveSeq.end()) << endl; 
-    cout << "* duration: " << solveDuration << endl << endl; 
+    cout << "* duration: " << solveDuration << " s" << endl << endl; 
     cout << endl << "Move commands:" << endl;
     cout << "* LEFT: " << static_cast<char>(LEFT)<< endl; 
     cout << "* RIGHT: " << static_cast<char>(RIGHT)<< endl; 
@@ -117,7 +117,8 @@ void Game::gameMenu(){
     cout << endl << "Menu options:" << endl;
     cout << "* 1. resume" << endl;
     cout << "* 2. restart from last checkpoint" << endl;
-    cout << "* 3. save checkpoint and go back to start menu" << endl;
+    cout << "* 3. save checkpoint" << endl;
+    cout << "* 4. quit" << endl;
     cout << endl << "Option selected:" << endl;
 
 
@@ -130,8 +131,9 @@ void Game::gameMenu(){
         }else if(cmd=="2"){
             restartFromLastCheckpoint();
         }else if(cmd=="3"){
-            exitLoop = true;
             saveGame();
+        }else if(cmd=="4"){
+            exitLoop = true;
         }else{
             validCmd = false;
         }
