@@ -98,12 +98,43 @@ namespace soko
              */
             void updateMap(string map);
 
+            /**
+             * construct a new game and show game window
+             * @param mapPath path to the map to load
+             */
             void initGame(string mapPath);
+
+            /**
+             * exit game and show main menu page
+             */
             void exitGame();
+
+            /**
+             * action performed when clicking on start new game:
+             * open a dialog box and ask for the user to choose a map to open.
+             * Once done, the map is loaded and the game start
+             */
             void startNewGame();
+            
+            /**
+             * When clicking on new game, the function is called to read the map
+             * file and init a new game.
+             */
             void onMapSelected(Glib::RefPtr<Gio::AsyncResult>& result);
+
+            /**
+             * Resume last saved game reading map stored in ~/.soko/sokoCheckpoint.soko
+             */
             void resumeLastGame();
+
+            /**
+             * Read files containing scores and display it
+             */
             void showScores();
+
+            /**
+             * Show main menu page.
+             */
             void showMainMenu();
             
         public:
