@@ -17,6 +17,7 @@
 #include <gtkmm/treeview.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/spinbutton.h>
 
 #define IMG_SIZE 50
 
@@ -61,6 +62,7 @@ namespace soko
             Gtk::Label labelNMove;
             Gtk::Label labelMoveHist;
             Gtk::Label labelDuration;
+            Gtk::SpinButton imgSizeSpinBtn;
             Gtk::TreeView scoreTreeView;
             Glib::RefPtr<Gtk::ListStore> scoreListStore;
             ModelColumnsScore columnsScore;
