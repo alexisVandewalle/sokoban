@@ -38,6 +38,8 @@ set(MODULES
     ${SRC_DIR}/SokobanWindow.cpp
 )
 
+add_executable(sokobanCmdLine ${SRC_DIR}/sokobanCmdLine.cpp ${MODULES_COMMON} ${HEADERS_COMMON})
+target_include_directories(sokobanCmdLine PRIVATE ${INCLUDE_DIR})
 
 add_executable(sokoban ${SRC_DIR}/sokoban.cpp ${MODULES} ${HEADERS})
 target_include_directories(sokoban PRIVATE ${INCLUDE_DIR})

@@ -33,6 +33,8 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
     pageMainMenu.append(quitBtn);
     pageMainMenu.set_valign(Gtk::Align::CENTER);
     pageMainMenu.set_margin(5);
+    pageMainMenu.set_halign(Gtk::Align::CENTER);
+    pageMainMenu.set_valign(Gtk::Align::CENTER);
 
     // construct page containing sokoban game
     pageGame.append(menuButton);
