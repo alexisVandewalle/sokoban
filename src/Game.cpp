@@ -92,7 +92,8 @@ void Game::saveGame(){
     string dirSoko = homePath + "/.soko";
     string cmd = "mkdir -p " + dirSoko;
     system(cmd.c_str());
-    ofstream gameFile(dirSoko + "/sokoCheckpoint.soko");
+    mapFilePath = dirSoko + "/sokoCheckpoint.soko";
+    ofstream gameFile(mapFilePath);
     map->save(gameFile);
     string moveStr(moveSeq.begin(), moveSeq.end());
     gameFile << "moves:" << moveStr << endl;

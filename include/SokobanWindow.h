@@ -57,6 +57,7 @@ namespace soko
             Gtk::Button resumeBtn;
             Gtk::Button restartBtn;
             Gtk::Button saveBtn;
+            Gtk::Button backToMainMenuBtn;
             Gtk::Label labelNMove;
             Gtk::Label labelMoveHist;
             Gtk::Label labelDuration;

@@ -40,13 +40,15 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
     pageMenuGame.attach(resumeBtn, 0, 0);
     pageMenuGame.attach(restartBtn, 0, 1);
     pageMenuGame.attach(saveBtn, 0, 2);
+    pageMenuGame.attach(backToMainMenuBtn, 0, 3);
     Gtk::Label labelStats("Stats:");
     pageMenuGame.attach(labelStats, 0, 4);
     pageMenuGame.attach(labelNMove, 0, 5);
     pageMenuGame.attach(labelDuration, 0, 6);
     resumeBtn.set_label("Resume");
     restartBtn.set_label("Restart from last checkpoint");
-    saveBtn.set_label("Save checkpoint and back to main menu");
+    saveBtn.set_label("Save checkpoint");
+    backToMainMenuBtn.set_label("Back to main menu");
 
     // construct page containing scores
     pageScores.append(scoreScroller);
@@ -86,6 +88,8 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
         sigc::mem_fun(*this, &SokobanWindow::restartGameFromLastCheckpoint));
     saveBtn.signal_clicked().connect(
         sigc::mem_fun(*this, &SokobanWindow::saveCheckpoint));
+    backToMainMenuBtn.signal_clicked().connect(
+        sigc::mem_fun(*this, &SokobanWindow::exitGame));
     backBtn.signal_clicked().connect(
         sigc::mem_fun(*this, &SokobanWindow::showMainMenu));
     auto controller = Gtk::EventControllerKey::create();
@@ -185,8 +189,7 @@ bool SokobanWindow::onKeyPressed(guint keyval, guint keycode, Gdk::ModifierType 
                 stringstream message;
                 message << "You win!!!" << endl;
                 message << " * Number of moves: " << game->getNMove() << endl; 
-                message << " * Move history: " << game->getMoveSeq() << endl;
-                message << " * Solve duration: " << game->getSolveDuration() << "s" << endl;
+                message << " * Solve duration: " << game->getSolveDuration() << " s" << endl;
                 cout << message.str();
                 Glib::RefPtr<Gtk::AlertDialog> dialog(Gtk::AlertDialog::create(message.str()));
                 dialog->show(*this);
@@ -202,7 +205,7 @@ void SokobanWindow::showGameMenu(){
     containerGame.set_visible_child(pageMenuGame);
     game->pause();
     labelNMove.set_label("* Number of moves: " + to_string(game->getNMove()));
-    labelDuration.set_label("* Solve duration: " + to_string(game->getSolveDuration()));
+    labelDuration.set_label("* Solve duration: " + to_string(game->getSolveDuration()) + " s");
 }
 
 void SokobanWindow::resumeGame(){
@@ -219,7 +222,6 @@ void SokobanWindow::restartGameFromLastCheckpoint(){
 
 void SokobanWindow::saveCheckpoint(){
     game->saveGame();
-    exitGame();
 }
 
 void SokobanWindow::exitGame(){
