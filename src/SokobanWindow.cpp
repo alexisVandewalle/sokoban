@@ -43,6 +43,12 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
     pageMenuGame.append(resumeBtn);
     pageMenuGame.append(restartBtn);
     pageMenuGame.append(saveBtn);
+    Gtk::Label labelImgSize("Image size (px):");
+    pageMenuGame.append(labelImgSize);
+    pageMenuGame.append(imgSizeSpinBtn);
+    imgSizeSpinBtn.set_range(10,100);
+    imgSizeSpinBtn.set_increments(1,5);
+    imgSizeSpinBtn.set_value(IMG_SIZE);
     pageMenuGame.append(backToMainMenuBtn);
     Gtk::Label labelStats("Stats:");
     pageMenuGame.append(labelStats);
@@ -139,7 +145,7 @@ void SokobanWindow::updateMap(string map){
             }
             w = gridImg->get_child_at(j,i);
             Gtk::Image* img = dynamic_cast<Gtk::Image*>(w);
-            img->set_pixel_size(IMG_SIZE);
+            img->set_pixel_size(imgSizeSpinBtn.get_value());
             switch (map[k]){
                 case WALL:
                     img->set(assetsPath + "wall.png");
@@ -215,6 +221,7 @@ void SokobanWindow::showGameMenu(){
 
 void SokobanWindow::resumeGame(){
     gamePaused = false;
+    updateMap(game->mapToString());
     containerGame.set_visible_child(pageGame);
     game->resume();
 }
