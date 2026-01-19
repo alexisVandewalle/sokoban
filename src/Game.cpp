@@ -82,6 +82,7 @@ void Game::gameLoop(){
 string Game::getScore(){
     string out;
     string moveStr(moveSeq.begin(), moveSeq.end());
+    out += map->getTitle() + ",";
     out += to_string(solveDuration) + "," + moveStr + "," + to_string(moveSeq.size());
     return out;
 }
@@ -91,7 +92,8 @@ void Game::saveGame(){
     string dirSoko = homePath + "/.soko";
     string cmd = "mkdir -p " + dirSoko;
     system(cmd.c_str());
-    ofstream gameFile(dirSoko + "/sokoCheckPoint.txt");
+    mapFilePath = dirSoko + "/sokoCheckpoint.soko";
+    ofstream gameFile(mapFilePath);
     map->save(gameFile);
     string moveStr(moveSeq.begin(), moveSeq.end());
     gameFile << "moves:" << moveStr << endl;
@@ -180,4 +182,15 @@ double Game::getSolveDuration(){
 
 bool Game::getIsWin(){
     return isWin;
+}
+
+void Game::saveScore(){
+    string homePath(getenv("HOME"));
+    string dirSoko = homePath + "/.soko";
+    string cmd = "mkdir -p " + dirSoko;
+    system(cmd.c_str());
+    
+    ofstream scoreFile(dirSoko + "/scores.csv", ios_base::app | ios_base::out);
+    scoreFile << getScore() << endl;
+    scoreFile.close();
 }

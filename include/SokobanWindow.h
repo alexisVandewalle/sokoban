@@ -12,6 +12,11 @@
 #include <gtkmm/stack.h>
 #include <string>
 #include <gtkmm/label.h>
+#include <gtkmm/box.h>
+#include <gtkmm/filedialog.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/scrolledwindow.h>
 
 #define IMG_SIZE 50
 
@@ -21,21 +26,47 @@ namespace soko
 {
     class SokobanWindow : public Gtk::Window
     {
+        //Tree model columns for scores:
+        class ModelColumnsScore : public Gtk::TreeModel::ColumnRecord
+        {
+            public:
+
+                ModelColumnsScore()
+                    { add(colTitle); add(colSolveDuration); add(colNMoves);}
+
+                Gtk::TreeModelColumn<Glib::ustring> colTitle;
+                Gtk::TreeModelColumn<Glib::ustring> colSolveDuration;
+                Gtk::TreeModelColumn<int> colNMoves;
+        };
+
         private:
             string assetsPath;
             unique_ptr<Game> game;
             bool gamePaused;
             Gtk::Stack containerGame;
+            Gtk::Box pageMainMenu;
             Gtk::Grid pageGame;
             Gtk::Grid pageMenuGame;
+            Gtk::Box pageScores;
+            Gtk::ScrolledWindow scoreScroller;
+            Gtk::Button startNewGameBtn;
+            Gtk::Button resumeLastGameBtn;
+            Gtk::Button showScoreBtn;
+            Gtk::Button quitBtn;
             Gtk::Button menuButton;
             Gtk::Button resumeBtn;
             Gtk::Button restartBtn;
             Gtk::Button saveBtn;
+            Gtk::Button backToMainMenuBtn;
             Gtk::Label labelNMove;
             Gtk::Label labelMoveHist;
             Gtk::Label labelDuration;
-            Gtk::Grid gridImg;
+            Gtk::TreeView scoreTreeView;
+            Glib::RefPtr<Gtk::ListStore> scoreListStore;
+            ModelColumnsScore columnsScore;
+            Gtk::Button backBtn;
+            unique_ptr<Gtk::Grid> gridImg;
+            Glib::RefPtr<Gtk::FileDialog> fileDialog;
 
             /**
              * Function called when a key is pressed
@@ -48,9 +79,9 @@ namespace soko
             void showGameMenu();
 
             /**
-             * Show page containing the sokoban puzzle
+             * Resume exiting game  showing page containing the sokoban puzzle
              */
-            void showGame();
+            void resumeGame();
 
             /**
              * Restart game from last saved checkpoint
@@ -61,16 +92,57 @@ namespace soko
              * Save current sokoban and close application
              */
             void saveCheckpoint();
+
+            /**
+             * Update display of sokoban map
+             */
+            void updateMap(string map);
+
+            /**
+             * construct a new game and show game window
+             * @param mapPath path to the map to load
+             */
+            void initGame(string mapPath);
+
+            /**
+             * exit game and show main menu page
+             */
+            void exitGame();
+
+            /**
+             * action performed when clicking on start new game:
+             * open a dialog box and ask for the user to choose a map to open.
+             * Once done, the map is loaded and the game start
+             */
+            void startNewGame();
+            
+            /**
+             * When clicking on new game, the function is called to read the map
+             * file and init a new game.
+             */
+            void onMapSelected(Glib::RefPtr<Gio::AsyncResult>& result);
+
+            /**
+             * Resume last saved game reading map stored in ~/.soko/sokoCheckpoint.soko
+             */
+            void resumeLastGame();
+
+            /**
+             * Read files containing scores and display it
+             */
+            void showScores();
+
+            /**
+             * Show main menu page.
+             */
+            void showMainMenu();
+            
         public:
             /**
              * Create sokoban window taking path to a given map
              */
             SokobanWindow(int argc, char** argv);
 
-            /**
-             * Update display of sokoban map
-             */
-            void updateMap(string map);
     };
 }
 #endif /* SOKOBAN_WINDOW_H */
