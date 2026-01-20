@@ -23,6 +23,13 @@ do
     echo "${SEPARATOR}"
 done
 
+TEST_NAME=testSokoParser
+echo "${SEPARATOR}"
+${BUILD_PATH}/test $TEST_NAME test/listSokoMaps.txt ${BUILD_PATH}/sokoSet1 sokoSet1
+TEST_STATUS=$?
+REPORT="${REPORT}\n${TEST_NAME}: ${TEST_STATUS}"
+echo "${SEPARATOR}"
+
 echo "==========================="
 echo "        TEST REPORT        "
 echo "==========================="

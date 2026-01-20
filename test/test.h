@@ -39,6 +39,8 @@ namespace test
      * Load a map and launch an interactive game
      */
     int testInteractiveGame(int argc, char* argv[]);
+
+    int testSokoParser(int argc, char* argv[]);
 }
 
 #endif /* TEST_H */
