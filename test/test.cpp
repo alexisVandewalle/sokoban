@@ -6,6 +6,7 @@
 #include <sstream>
 #include <bits/stdc++.h>
 #include "Game.h"
+#include "SokoParser.h"
 
 using namespace std;
 using namespace test;
@@ -14,6 +15,19 @@ using namespace soko;
 int test::testSokoban(){
     cout << "Hello world!" << endl;
     return 0; 
+}
+
+
+int test::testSokoParser(int argc, char* argv[]){
+    if(argc != 4){
+        cerr << "Invalid number of arguments" << endl;
+        cerr << "you should provide <input file path> <output dir> and <map set title>" << endl;
+        return EXIT_FAILURE;
+    }
+    string inFilePath(argv[1]), outDir(argv[2]), mapSetTitle(argv[3]);
+    SokoParser myParser(inFilePath, outDir, mapSetTitle);
+    myParser.parse();
+    return EXIT_SUCCESS; 
 }
 
 int test::testMapLoadSave(int argc, char* argv[]){
@@ -151,6 +165,7 @@ void test::printHelp(string& progName){
     cout << " * testMapLoadSave" << endl;
     cout << " * testMapMove" << endl;
     cout << " * testInteractiveGame" << endl;
+    cout << " * testSokoParser" << endl;
 }
 
 int main(int argc, char* argv[]){
@@ -172,6 +187,9 @@ int main(int argc, char* argv[]){
     }else if(arg=="testInteractiveGame"){
         cout << "Executing " << arg << endl;
         return testInteractiveGame(argc-1, argv+1); 
+    }else if(arg=="testSokoParser"){
+        cout << "Executing " << arg << endl;
+        return testSokoParser(argc-1, argv+1); 
     }else{
         cerr << "Unknown test name" << endl;
         return EXIT_FAILURE;

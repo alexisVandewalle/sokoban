@@ -25,6 +25,16 @@ namespace soko
             FileNotFoundException(string filePathAttr) : filePath(filePathAttr){}
             string getFilePath(){ return filePath; }
     };
+
+
+    class FileWriteException : public AppException
+    {
+        private:
+            string filePath;
+        public:
+            FileWriteException(string filePathAttr) : filePath(filePathAttr){}
+            string getFilePath(){ return filePath; }
+    };
 }
 
 #endif /* EXCEPTIONS_H */

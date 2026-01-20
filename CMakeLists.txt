@@ -19,6 +19,7 @@ set(HEADERS_COMMON
     ${INCLUDE_DIR}/BlockType.h
     ${INCLUDE_DIR}/MoveType.h
     ${INCLUDE_DIR}/exceptions.h
+    ${INCLUDE_DIR}/SokoParser.h
 )
 
 set(HEADERS 
@@ -31,6 +32,7 @@ set(MODULES_COMMON
     ${SRC_DIR}/MainMenu.cpp
     ${SRC_DIR}/Game.cpp
     ${SRC_DIR}/Map.cpp
+    ${SRC_DIR}/SokoParser.cpp
 )
 
 set(MODULES
@@ -43,6 +45,9 @@ target_include_directories(sokobanCmdLine PRIVATE ${INCLUDE_DIR})
 
 add_executable(sokoban ${SRC_DIR}/sokoban.cpp ${MODULES} ${HEADERS})
 target_include_directories(sokoban PRIVATE ${INCLUDE_DIR})
+
+add_executable(sokobanParser ${SRC_DIR}/sokobanParser.cpp ${MODULES_COMMON} ${HEADERS_COMMON})
+target_include_directories(sokobanParser PRIVATE ${INCLUDE_DIR})
 
 # link with gtk library
 find_package(PkgConfig REQUIRED)
