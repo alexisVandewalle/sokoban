@@ -27,10 +27,13 @@ void SokoParser::parse(){
         // define a pointer to a file storing the sokoban map
         unique_ptr<ofstream> outFile;
         while(getline(inFile, line)){
+            // check if there is a character indicating a wall in the line
             if(line.find(findPattern)!=string::npos){
+                // check wether it is the sstart of a new map
                 if(ignoreSection){
                     level++;
                     string outFilePath(mOutDir + "/level" + to_string(level) + ".soko");
+                    // write the map to a file
                     outFile = make_unique<ofstream>(outFilePath);
                     if(!outFile->is_open()){
                         throw FileWriteException(outFilePath);
@@ -39,6 +42,7 @@ void SokoParser::parse(){
                 (*outFile) << line << endl;
                 ignoreSection = false;
             }else{
+                // if the line before was part of a map
                 if(!ignoreSection && outFile->is_open()){
                     (*outFile) << endl << "title:";
                     (*outFile) << mMapSetTitle << "/" << "level " << level << endl; 
@@ -47,6 +51,7 @@ void SokoParser::parse(){
                 ignoreSection = true;
             }
         }
+        // if output file has not been closed before, close it and write metadata
         if(outFile!=nullptr && outFile->is_open()){
             (*outFile) << endl << "title:";
             (*outFile) << mMapSetTitle << "/" << "level " << level << endl; 
