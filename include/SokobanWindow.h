@@ -18,6 +18,7 @@
 #include <gtkmm/liststore.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/spinbutton.h>
+#include "ImportMapDialog.h"
 
 #define IMG_SIZE 50
 
@@ -53,6 +54,7 @@ namespace soko
             Gtk::Button startNewGameBtn;
             Gtk::Button resumeLastGameBtn;
             Gtk::Button showScoreBtn;
+            Gtk::Button importMapsBtn;
             Gtk::Button quitBtn;
             Gtk::Button menuButton;
             Gtk::Button resumeBtn;
@@ -69,6 +71,7 @@ namespace soko
             Gtk::Button backBtn;
             unique_ptr<Gtk::Grid> gridImg;
             Glib::RefPtr<Gtk::FileDialog> fileDialog;
+            unique_ptr<ImportMapDialog> dialog;
 
             /**
              * Function called when a key is pressed
@@ -139,6 +142,12 @@ namespace soko
              */
             void showMainMenu();
             
+            /**
+             * Import set of maps from text file containing a list of maps
+             */
+            void importMaps();
+            void readAndImport();
+
         public:
             /**
              * Create sokoban window taking path to a given map

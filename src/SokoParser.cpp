@@ -59,6 +59,6 @@ void SokoParser::parse(){
         }
         inFile.close();
     }else{
-        throw FileWriteException(mInFilePath); 
+        throw FileNotFoundException(mInFilePath); 
     }
 }
