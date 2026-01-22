@@ -20,6 +20,7 @@ set(HEADERS_COMMON
     ${INCLUDE_DIR}/MoveType.h
     ${INCLUDE_DIR}/exceptions.h
     ${INCLUDE_DIR}/SokoParser.h
+    ${INCLUDE_DIR}/NodeMap.h
 )
 
 set(HEADERS 
@@ -34,6 +35,7 @@ set(MODULES_COMMON
     ${SRC_DIR}/Game.cpp
     ${SRC_DIR}/Map.cpp
     ${SRC_DIR}/SokoParser.cpp
+    ${SRC_DIR}/NodeMap.cpp
 )
 
 set(MODULES

@@ -41,6 +41,8 @@ namespace test
     int testInteractiveGame(int argc, char* argv[]);
 
     int testSokoParser(int argc, char* argv[]);
+
+    int testCopyHashMap(int argc, char* argv[]);
 }
 
 #endif /* TEST_H */

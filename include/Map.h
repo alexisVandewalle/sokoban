@@ -122,6 +122,14 @@ namespace soko
              * Construct map from an input file
              */
             Map(string filePath);
+
+            /**
+             * Copy constructor
+             */
+            Map(const Map& m);
+
+            bool operator==(const Map& m);
+            size_t getHash() const;
     };
 
     enum MoveStatus
