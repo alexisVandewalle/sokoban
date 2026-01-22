@@ -7,6 +7,8 @@
 #include <gtkmm/alertdialog.h>
 #include "exceptions.h"
 #include <fstream>
+#include "ImportMapDialog.h"
+#include "SokoParser.h"
 
 using namespace soko;
 
@@ -26,12 +28,13 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
     startNewGameBtn.set_label("Start new game");
     resumeLastGameBtn.set_label("Resume last saved game");
     showScoreBtn.set_label("Show scores");
+    importMapsBtn.set_label("Import maps from file");
     quitBtn.set_label("Quit");
     pageMainMenu.append(startNewGameBtn);
     pageMainMenu.append(resumeLastGameBtn);
     pageMainMenu.append(showScoreBtn);
+    pageMainMenu.append(importMapsBtn);
     pageMainMenu.append(quitBtn);
-    pageMainMenu.set_valign(Gtk::Align::CENTER);
     pageMainMenu.set_margin(5);
     pageMainMenu.set_halign(Gtk::Align::CENTER);
     pageMainMenu.set_valign(Gtk::Align::CENTER);
@@ -91,6 +94,8 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
         sigc::mem_fun(*this, &SokobanWindow::resumeLastGame));
     showScoreBtn.signal_clicked().connect(
         sigc::mem_fun(*this, &SokobanWindow::showScores));
+    importMapsBtn.signal_clicked().connect(
+        sigc::mem_fun(*this, &SokobanWindow::importMaps));
     quitBtn.signal_clicked().connect(
         sigc::mem_fun(*this, &SokobanWindow::close));
     menuButton.signal_clicked().connect(
@@ -313,4 +318,31 @@ void SokobanWindow::showScores(){
 
 void SokobanWindow::showMainMenu(){
     containerGame.set_visible_child(pageMainMenu);    
+}
+
+void SokobanWindow::importMaps(){
+    dialog = make_unique<ImportMapDialog>();
+    dialog->show();
+    dialog->signalOkClicked().connect(
+        sigc::mem_fun(*this, &SokobanWindow::readAndImport));
+}
+
+void SokobanWindow::readAndImport(){
+    string setTitle = dialog->getSetTitle();
+    string outDir = dialog->getOutputDir() + "/" + setTitle;
+    string listMapFilePath = dialog->getListFilePath();
+    dialog->close();
+
+    try{
+        SokoParser myParser(listMapFilePath, outDir, setTitle);
+        myParser.parse();
+        Glib::RefPtr<Gtk::AlertDialog> dialog(Gtk::AlertDialog::create("Successfuly import sokoban maps in " + outDir));
+        dialog->show(*this);
+    }catch(FileWriteException& e){
+        Glib::RefPtr<Gtk::AlertDialog> dialog(Gtk::AlertDialog::create("Cannot write sokoban Maps\ninvalid output directory"));
+        dialog->show(*this);
+    }catch(FileNotFoundException& e){
+        Glib::RefPtr<Gtk::AlertDialog> dialog(Gtk::AlertDialog::create("Cannot find input file"));
+        dialog->show(*this);
+    }
 }
