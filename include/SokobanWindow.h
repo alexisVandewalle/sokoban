@@ -143,9 +143,14 @@ namespace soko
             void showMainMenu();
             
             /**
-             * Import set of maps from text file containing a list of maps
+             * Open a dialog to import a list of maps
              */
             void importMaps();
+
+            /**
+             * Read file containing list of maps to import and import them
+             * in selected output directory
+             */
             void readAndImport();
 
         public:
