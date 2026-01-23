@@ -16,21 +16,34 @@ namespace soko
     class NodeMap
     {
         private:
-            shared_ptr<NodeMap> parent;
+            NodeMap* parent;
             unique_ptr<Map> map;
             MoveType move;
         public:
-            NodeMap(shared_ptr<NodeMap> parent, MoveType m);
+            NodeMap(NodeMap& aParent, MoveType m);
             NodeMap(const Map& m);
-            bool operator==(const NodeMap& n2);
+            NodeMap(const NodeMap& n);
+            bool operator==(const NodeMap& n2) const;
             size_t getHash() const { return map->getHash(); };
             string getMoveSeq();
+            bool isWin() { return map->isWin(); };
     };
 
     struct NodeMapHasher {
+        size_t operator()(const shared_ptr<NodeMap>& n) const
+        {
+            return n->getHash();
+        }
         size_t operator()(const NodeMap& n) const
         {
             return n.getHash();
+        }
+    };
+
+    struct NodeMapKeyEqual{
+        bool operator()( const shared_ptr<NodeMap>& n1, const shared_ptr<NodeMap>& n2) const
+        {
+            return (*n1)==(*n2);
         }
     };
 }

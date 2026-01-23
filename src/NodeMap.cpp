@@ -4,26 +4,36 @@
 using namespace std;
 using namespace soko;
 
-NodeMap::NodeMap(shared_ptr<NodeMap> parent, MoveType m){
-    this->parent = parent;
+NodeMap::NodeMap(NodeMap& aParent, MoveType m){
+    this->parent = &aParent;
     if(parent!=nullptr){
         map = make_unique<Map>(*(parent->map));
         map->move(m);
+        move = m;
     }
 }
 
 NodeMap::NodeMap(const Map& m){
     map = make_unique<Map>(m);
+    parent = nullptr;
 }
 
-bool NodeMap::operator==(const NodeMap& n2){
+NodeMap::NodeMap(const NodeMap& n){
+    parent = n.parent;
+    map = make_unique<Map>(*(n.map));
+    move = n.move;
+}
+
+bool NodeMap::operator==(const NodeMap& n2) const {
     return (*(this->map))==(*(n2.map));
 }
 
 string NodeMap::getMoveSeq(){
     string out;
-    while(this->parent!=nullptr){
-        out = out + move;
+    NodeMap* currentNode = this;
+    while(currentNode->parent!=nullptr){
+        out = static_cast<char>(currentNode->move) + out;
+        currentNode = currentNode->parent;
     }
     return out;
 }

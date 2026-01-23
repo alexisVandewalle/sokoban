@@ -7,6 +7,8 @@
 #include <bits/stdc++.h>
 #include "Game.h"
 #include "SokoParser.h"
+#include "NodeMap.h"
+#include <unordered_set> 
 
 using namespace std;
 using namespace test;
@@ -186,6 +188,36 @@ int test::testCopyHashMap(int argc, char* argv[]){
     return EXIT_SUCCESS;
 }
 
+int test::testNodeMap(int argc, char* argv[]){
+    
+    stringstream ss;
+    ss << "#####" << "\n";
+    ss << "#   #" << "\n";
+    ss << "# @.#" << "\n";
+    ss << "#####" << "\n";
+    ss << "\n";
+    ss << "title:test";
+
+    Map m1(ss);
+    shared_ptr<NodeMap> n1 = make_shared<NodeMap>(m1);
+    shared_ptr<NodeMap> n2 = make_shared<NodeMap>(*n1, LEFT);
+    shared_ptr<NodeMap> n3 = make_shared<NodeMap>(*n2, LEFT);
+    cout << n3->getMoveSeq() << endl;
+    cout << "n3==n2?" << (*n3==*n2) << endl;
+    cout << "n3==n1?" << (*n3==*n1) << endl;
+
+    cout << "test unordered set" << endl; 
+    unordered_set<shared_ptr<NodeMap>, NodeMapHasher, NodeMapKeyEqual> set;
+
+    cout << "insert n1" << endl;
+    set.insert(n1);
+    cout << "set contains n3?" << set.count(n3) << endl;
+    cout << "insert n2" << endl;
+    set.insert(n2);
+    cout << "set contains n3?" << set.count(n3) << endl;
+    return EXIT_SUCCESS;
+}
+
 void test::printHelp(string& progName){
     cout << "This is the program to launch test for the sokoban application" << endl;
     cout << "Usage: " << progName << " testName" << endl;
@@ -195,6 +227,7 @@ void test::printHelp(string& progName){
     cout << " * testInteractiveGame" << endl;
     cout << " * testSokoParser" << endl;
     cout << " * testCopyHashMap" << endl;
+    cout << " * testNodeMap" << endl;
 }
 
 int main(int argc, char* argv[]){
@@ -222,6 +255,9 @@ int main(int argc, char* argv[]){
     }else if(arg=="testCopyHashMap"){
         cout << "Executing " << arg << endl;
         return testCopyHashMap(argc-1, argv+1); 
+    }else if(arg=="testNodeMap"){
+        cout << "Executing " << arg << endl;
+        return testNodeMap(argc-1, argv+1); 
     }else{
         cerr << "Unknown test name" << endl;
         return EXIT_FAILURE;

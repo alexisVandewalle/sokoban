@@ -21,6 +21,8 @@ set(HEADERS_COMMON
     ${INCLUDE_DIR}/exceptions.h
     ${INCLUDE_DIR}/SokoParser.h
     ${INCLUDE_DIR}/NodeMap.h
+    ${INCLUDE_DIR}/NodeMap.h
+    ${INCLUDE_DIR}/Solver.h
 )
 
 set(HEADERS 
@@ -36,6 +38,7 @@ set(MODULES_COMMON
     ${SRC_DIR}/Map.cpp
     ${SRC_DIR}/SokoParser.cpp
     ${SRC_DIR}/NodeMap.cpp
+    ${SRC_DIR}/Solver.cpp
 )
 
 set(MODULES
@@ -52,6 +55,9 @@ target_include_directories(sokoban PRIVATE ${INCLUDE_DIR})
 
 add_executable(sokobanParser ${SRC_DIR}/sokobanParser.cpp ${MODULES_COMMON} ${HEADERS_COMMON})
 target_include_directories(sokobanParser PRIVATE ${INCLUDE_DIR})
+
+add_executable(sokobanSolver ${SRC_DIR}/sokobanSolver.cpp ${MODULES_COMMON} ${HEADERS_COMMON})
+target_include_directories(sokobanSolver PRIVATE ${INCLUDE_DIR})
 
 # link with gtk library
 find_package(PkgConfig REQUIRED)

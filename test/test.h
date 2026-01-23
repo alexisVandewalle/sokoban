@@ -43,6 +43,8 @@ namespace test
     int testSokoParser(int argc, char* argv[]);
 
     int testCopyHashMap(int argc, char* argv[]);
+
+    int testNodeMap(int argc, char* argv[]);
 }
 
 #endif /* TEST_H */
