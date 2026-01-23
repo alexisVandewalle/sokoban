@@ -171,10 +171,14 @@ int test::testCopyHashMap(int argc, char* argv[]){
     ss << "title:test";
 
     Map m1(ss);
+    // try making a copy of m1
     Map m2(m1);
+    // test equality operator
     cout << "m1==m2?" << (m1==m2) << endl;
+    // test hash computation
     cout << "hash m1: " << m1.getHash() << endl;
     cout << "hash m2: " << m2.getHash() << endl;
+    // test if modification on m2 modifies m1
     m2.move(LEFT);
     vector<int> p1(m1.getCharacterPos());
     vector<int> p2(m2.getCharacterPos());
@@ -183,6 +187,7 @@ int test::testCopyHashMap(int argc, char* argv[]){
     cout << "p1:" << p1[0] << " " << p1[1] << endl;
     cout << "p2:" << p2[0] << " " << p2[1] << endl;
     cout << "m1==m2?" << (m1==m2) << endl;
+    // check two hashes are different
     cout << "hash m1: " << m1.getHash() << endl;
     cout << "hash m2: " << m2.getHash() << endl;
 
@@ -203,6 +208,8 @@ int test::testNodeMap(int argc, char* argv[]){
     shared_ptr<NodeMap> n1 = make_shared<NodeMap>(m1);
     shared_ptr<NodeMap> n2 = make_shared<NodeMap>(*n1, LEFT);
     shared_ptr<NodeMap> n3 = make_shared<NodeMap>(*n2, LEFT);
+    // test getMoveSeq is working
+    assert(n3->getMoveSeq()=="HH");
     cout << n3->getMoveSeq() << endl;
     cout << "n3==n2?" << (*n3==*n2) << endl;
     cout << "n3==n1?" << (*n3==*n1) << endl;
@@ -212,10 +219,10 @@ int test::testNodeMap(int argc, char* argv[]){
 
     cout << "insert n1" << endl;
     set.insert(n1);
-    cout << "set contains n3?" << set.count(n3) << endl;
+    assert(set.count(n3)==0);
     cout << "insert n2" << endl;
     set.insert(n2);
-    cout << "set contains n3?" << set.count(n3) << endl;
+    assert(set.count(n3)==1);
     return EXIT_SUCCESS;
 }
 

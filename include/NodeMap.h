@@ -11,7 +11,8 @@ using namespace std;
 namespace soko
 {
     /**
-     * A class to represent a node (only use for the solver)
+     * A class to represent a node in a graph of maps.
+     * This class is used by the solver to find the shortest path to a solution
      */
     class NodeMap
     {
@@ -20,12 +21,44 @@ namespace soko
             unique_ptr<Map> map;
             MoveType move;
         public:
+            /**
+             * Construct a node given a parent node and a move to perform
+             * @param aParent parent of the node to create
+             * @param move to perform
+             */
             NodeMap(NodeMap& aParent, MoveType m);
+
+            /**
+             * Construct a node given an input map. Parent node is set to null
+             * in this case
+             * @param m
+             */
             NodeMap(const Map& m);
+
+            /**
+             * Create a copy a node of an existing node
+             */
             NodeMap(const NodeMap& n);
+
+            /**
+             * two nodes are equaled if and only if the two maps are equaled
+             */
             bool operator==(const NodeMap& n2) const;
+
+            /**
+             * Compute a hash for a node base on the corresponding map
+             */
             size_t getHash() const { return map->getHash(); };
+
+            /**
+             * Get sequence of moves associated to current node, ie compute path
+             * from start node to this node
+             */
             string getMoveSeq();
+
+            /**
+             * Indicate if the game is won at this node
+             */
             bool isWin() { return map->isWin(); };
     };
 

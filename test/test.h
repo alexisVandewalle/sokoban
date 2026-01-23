@@ -42,10 +42,22 @@ namespace test
 
     int testSokoParser(int argc, char* argv[]);
 
+    /**
+     * Test copy of a map and hash computation of a map
+     */
     int testCopyHashMap(int argc, char* argv[]);
 
+    /**
+     * Test the NodeMap class and test that it can be used
+     * in an unordered_set
+     */
     int testNodeMap(int argc, char* argv[]);
 
+    /**
+     * Test sokoban solver given an imput map.
+     * The test run the solver and check if solution
+     * works applying the moves one by one.
+     */
     int testSokobanSolver(int argc, char* argv[]);
 }
 

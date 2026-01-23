@@ -129,6 +129,11 @@ namespace soko
             Map(const Map& m);
 
             bool operator==(const Map& m);
+
+            /**
+             * Compute a hash for the map.
+             * The hash is computed from its string representation.
+             */
             size_t getHash() const;
     };
 

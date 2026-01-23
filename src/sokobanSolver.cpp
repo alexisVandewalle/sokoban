@@ -21,6 +21,7 @@ int main(int argc, char**argv){
         cout << " * solution:" << s.getSolution() << endl;
     }else{
         cout << "No solution found - map impossible to solve" << endl;
+        return EXIT_FAILURE;
     }
     return EXIT_SUCCESS; 
 }

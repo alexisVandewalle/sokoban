@@ -15,6 +15,7 @@ void Solver::run(){
     queue<shared_ptr<NodeMap>> nodeToVisit;
     vector<MoveType> moves = {LEFT,RIGHT,DOWN,UP};
     shared_ptr<NodeMap> startNodePtr = make_shared<NodeMap>(startNode);
+    // init list of nodes to visit
     nodeToVisit.push(startNodePtr);
     if(startNode.isWin()){
         mIsSolve = true;

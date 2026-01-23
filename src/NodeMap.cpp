@@ -7,6 +7,7 @@ using namespace soko;
 NodeMap::NodeMap(NodeMap& aParent, MoveType m){
     this->parent = &aParent;
     if(parent!=nullptr){
+        // create a copy of the parent's map and perform a move
         map = make_unique<Map>(*(parent->map));
         map->move(m);
         move = m;
@@ -14,6 +15,7 @@ NodeMap::NodeMap(NodeMap& aParent, MoveType m){
 }
 
 NodeMap::NodeMap(const Map& m){
+    // create a copy of the map
     map = make_unique<Map>(m);
     parent = nullptr;
 }
