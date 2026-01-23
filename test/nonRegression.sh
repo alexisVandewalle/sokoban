@@ -30,6 +30,13 @@ TEST_STATUS=$?
 REPORT="${REPORT}\n${TEST_NAME}: ${TEST_STATUS}"
 echo "${SEPARATOR}"
 
+TEST_NAME=testSokobanSolver
+echo "${SEPARATOR}"
+${BUILD_PATH}/test $TEST_NAME test/testMapSolver.soko
+TEST_STATUS=$?
+REPORT="${REPORT}\n${TEST_NAME}: ${TEST_STATUS}"
+echo "${SEPARATOR}"
+
 echo "==========================="
 echo "        TEST REPORT        "
 echo "==========================="

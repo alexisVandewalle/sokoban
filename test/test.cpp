@@ -7,6 +7,9 @@
 #include <bits/stdc++.h>
 #include "Game.h"
 #include "SokoParser.h"
+#include "NodeMap.h"
+#include <unordered_set> 
+#include "Solver.h" 
 
 using namespace std;
 using namespace test;
@@ -158,6 +161,100 @@ int test::testInteractiveGame(int argc, char* argv[]){
     return EXIT_SUCCESS;
 }
 
+int test::testCopyHashMap(int argc, char* argv[]){
+    stringstream ss;
+    ss << "#####" << "\n";
+    ss << "#   #" << "\n";
+    ss << "# @.#" << "\n";
+    ss << "#####" << "\n";
+    ss << "\n";
+    ss << "title:test";
+
+    Map m1(ss);
+    // try making a copy of m1
+    Map m2(m1);
+    // test equality operator
+    cout << "m1==m2?" << (m1==m2) << endl;
+    // test hash computation
+    cout << "hash m1: " << m1.getHash() << endl;
+    cout << "hash m2: " << m2.getHash() << endl;
+    // test if modification on m2 modifies m1
+    m2.move(LEFT);
+    vector<int> p1(m1.getCharacterPos());
+    vector<int> p2(m2.getCharacterPos());
+    cout << m1.toString() << endl;
+    cout << m2.toString() << endl;
+    cout << "p1:" << p1[0] << " " << p1[1] << endl;
+    cout << "p2:" << p2[0] << " " << p2[1] << endl;
+    cout << "m1==m2?" << (m1==m2) << endl;
+    // check two hashes are different
+    cout << "hash m1: " << m1.getHash() << endl;
+    cout << "hash m2: " << m2.getHash() << endl;
+
+    return EXIT_SUCCESS;
+}
+
+int test::testNodeMap(int argc, char* argv[]){
+    
+    stringstream ss;
+    ss << "#####" << "\n";
+    ss << "#   #" << "\n";
+    ss << "# @.#" << "\n";
+    ss << "#####" << "\n";
+    ss << "\n";
+    ss << "title:test";
+
+    Map m1(ss);
+    shared_ptr<NodeMap> n1 = make_shared<NodeMap>(m1);
+    shared_ptr<NodeMap> n2 = make_shared<NodeMap>(*n1, LEFT);
+    shared_ptr<NodeMap> n3 = make_shared<NodeMap>(*n2, LEFT);
+    // test getMoveSeq is working
+    assert(n3->getMoveSeq()=="HH");
+    cout << n3->getMoveSeq() << endl;
+    cout << "n3==n2?" << (*n3==*n2) << endl;
+    cout << "n3==n1?" << (*n3==*n1) << endl;
+
+    cout << "test unordered set" << endl; 
+    unordered_set<shared_ptr<NodeMap>, NodeMapHasher, NodeMapKeyEqual> set;
+
+    cout << "insert n1" << endl;
+    set.insert(n1);
+    assert(set.count(n3)==0);
+    cout << "insert n2" << endl;
+    set.insert(n2);
+    assert(set.count(n3)==1);
+    return EXIT_SUCCESS;
+}
+
+
+int test::testSokobanSolver(int argc, char* argv[]){
+
+    Map map(argv[1]);
+    cout << "Map to solve:" << endl;
+    cout << map.toString() << endl;
+    Solver s(map);
+    s.run();
+    
+    if(s.isSolve()){
+        // check solution is correct
+        cout << "Solution found:" << s.getSolution() << endl;
+        cout << "Step by step solution" << endl;
+        string solution(s.getSolution());
+        for(int i=0; i< solution.length(); i++){
+            cout << endl << "Step " << (i+1) << ":" << endl;
+            int moveSt = map.move(static_cast<MoveType>(solution[i]));
+            assert(moveSt==MOVE_OK);
+            cout << map.toString() << endl;
+        }
+        assert(map.isWin() == true);
+    }else{
+        cout << "no solution found" << endl;
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS; 
+}
+
 void test::printHelp(string& progName){
     cout << "This is the program to launch test for the sokoban application" << endl;
     cout << "Usage: " << progName << " testName" << endl;
@@ -166,6 +263,9 @@ void test::printHelp(string& progName){
     cout << " * testMapMove" << endl;
     cout << " * testInteractiveGame" << endl;
     cout << " * testSokoParser" << endl;
+    cout << " * testCopyHashMap" << endl;
+    cout << " * testNodeMap" << endl;
+    cout << " * testSokobanSolver" << endl;
 }
 
 int main(int argc, char* argv[]){
@@ -190,6 +290,15 @@ int main(int argc, char* argv[]){
     }else if(arg=="testSokoParser"){
         cout << "Executing " << arg << endl;
         return testSokoParser(argc-1, argv+1); 
+    }else if(arg=="testCopyHashMap"){
+        cout << "Executing " << arg << endl;
+        return testCopyHashMap(argc-1, argv+1); 
+    }else if(arg=="testNodeMap"){
+        cout << "Executing " << arg << endl;
+        return testNodeMap(argc-1, argv+1); 
+    }else if(arg=="testSokobanSolver"){
+        cout << "Executing " << arg << endl;
+        return testSokobanSolver(argc-1, argv+1); 
     }else{
         cerr << "Unknown test name" << endl;
         return EXIT_FAILURE;

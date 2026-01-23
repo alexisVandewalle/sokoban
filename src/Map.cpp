@@ -237,6 +237,17 @@ Map::Map(string filePath){
     }
 }
 
+Map::Map(const Map& m){
+    nLines = m.nLines;
+    nCol = m.nCol;
+    nTarget = m.nTarget;
+    nBoxOnTarget = m.nBoxOnTarget;
+    characterPos.assign(m.characterPos.begin(), m.characterPos.end());
+    map.assign(m.map.begin(), m.map.end());
+    title = m.title;
+    otherMetadata = m.otherMetadata;
+}
+
 void Map::init(istream& inStream){
     // init number of lines and columns
     vector<int> nLineCol(getNLineColMap(inStream));
@@ -298,4 +309,21 @@ void Map::transpose(){
     int iTmp = characterPos[0];
     characterPos[0] = characterPos[1];
     characterPos[1] = iTmp;
+}
+
+bool Map::operator==(const Map& m){
+    bool out(false);
+    if(nLines!=m.nLines){
+        return false;
+    }
+    if(nCol!=m.nCol){
+        return false;
+    }
+    return (m.map == map);
+}
+
+size_t Map::getHash() const{
+    hash<string> hasher;
+    string s(map.begin(), map.end());
+    return hasher(s);
 }
