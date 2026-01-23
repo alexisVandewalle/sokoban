@@ -9,6 +9,7 @@
 #include "SokoParser.h"
 #include "NodeMap.h"
 #include <unordered_set> 
+#include "Solver.h" 
 
 using namespace std;
 using namespace test;
@@ -218,6 +219,35 @@ int test::testNodeMap(int argc, char* argv[]){
     return EXIT_SUCCESS;
 }
 
+
+int test::testSokobanSolver(int argc, char* argv[]){
+
+    Map map(argv[1]);
+    cout << "Map to solve:" << endl;
+    cout << map.toString() << endl;
+    Solver s(map);
+    s.run();
+    
+    if(s.isSolve()){
+        // check solution is correct
+        cout << "Solution found:" << s.getSolution() << endl;
+        cout << "Step by step solution" << endl;
+        string solution(s.getSolution());
+        for(int i=0; i< solution.length(); i++){
+            cout << endl << "Step " << (i+1) << ":" << endl;
+            int moveSt = map.move(static_cast<MoveType>(solution[i]));
+            assert(moveSt==MOVE_OK);
+            cout << map.toString() << endl;
+        }
+        assert(map.isWin() == true);
+    }else{
+        cout << "no solution found" << endl;
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS; 
+}
+
 void test::printHelp(string& progName){
     cout << "This is the program to launch test for the sokoban application" << endl;
     cout << "Usage: " << progName << " testName" << endl;
@@ -228,6 +258,7 @@ void test::printHelp(string& progName){
     cout << " * testSokoParser" << endl;
     cout << " * testCopyHashMap" << endl;
     cout << " * testNodeMap" << endl;
+    cout << " * testSokobanSolver" << endl;
 }
 
 int main(int argc, char* argv[]){
@@ -258,6 +289,9 @@ int main(int argc, char* argv[]){
     }else if(arg=="testNodeMap"){
         cout << "Executing " << arg << endl;
         return testNodeMap(argc-1, argv+1); 
+    }else if(arg=="testSokobanSolver"){
+        cout << "Executing " << arg << endl;
+        return testSokobanSolver(argc-1, argv+1); 
     }else{
         cerr << "Unknown test name" << endl;
         return EXIT_FAILURE;
