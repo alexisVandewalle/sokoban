@@ -19,6 +19,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/spinbutton.h>
 #include "ImportMapDialog.h"
+#include "MoveSequenceDialog.h"
 
 #define IMG_SIZE 50
 
@@ -52,6 +53,7 @@ namespace soko
             Gtk::Box pageScores;
             Gtk::ScrolledWindow scoreScroller;
             Gtk::Button startNewGameBtn;
+            Gtk::Button autoPlaySeqBtn;
             Gtk::Button resumeLastGameBtn;
             Gtk::Button showScoreBtn;
             Gtk::Button importMapsBtn;
@@ -72,6 +74,11 @@ namespace soko
             unique_ptr<Gtk::Grid> gridImg;
             Glib::RefPtr<Gtk::FileDialog> fileDialog;
             unique_ptr<ImportMapDialog> dialog;
+
+            // variables used for autoplay
+            int moveCntAuto = 0;
+            bool autoPlay = false;
+            unique_ptr<MoveSequenceDialog> moveSeqDialog;
 
             /**
              * Function called when a key is pressed
@@ -152,6 +159,22 @@ namespace soko
              * in selected output directory
              */
             void readAndImport();
+
+            /**
+             * Callback called to play the next move in case autoplay mode
+             * is selected.
+             */
+            bool playNextMoveAutoPlay();
+
+            /**
+             * Callback called when pressing autoplay button
+             */
+            void onAutoPlaySeq();
+
+            /**
+             * Launch autoplay
+             */
+            void launchAutoPlay();
 
         public:
             /**

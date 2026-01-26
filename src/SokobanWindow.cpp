@@ -9,6 +9,8 @@
 #include <fstream>
 #include "ImportMapDialog.h"
 #include "SokoParser.h"
+#include <thread>
+#include <glibmm/main.h>
 
 using namespace soko;
 
@@ -26,11 +28,13 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
 
     // construct page containing main menu of the game
     startNewGameBtn.set_label("Start new game");
+    autoPlaySeqBtn.set_label("Play sequence automatically");
     resumeLastGameBtn.set_label("Resume last saved game");
     showScoreBtn.set_label("Show scores");
     importMapsBtn.set_label("Import maps from file");
     quitBtn.set_label("Quit");
     pageMainMenu.append(startNewGameBtn);
+    pageMainMenu.append(autoPlaySeqBtn);
     pageMainMenu.append(resumeLastGameBtn);
     pageMainMenu.append(showScoreBtn);
     pageMainMenu.append(importMapsBtn);
@@ -115,6 +119,9 @@ SokobanWindow::SokobanWindow(int argc, char** argv)
         sigc::mem_fun(*this, &SokobanWindow::onKeyPressed), false);
     add_controller(controller);
 
+    autoPlaySeqBtn.signal_clicked().connect(
+            sigc::mem_fun(*this, &SokobanWindow::onAutoPlaySeq));
+
     // create game instance
     if(argc > 1){
         string mapPath(argv[1]);
@@ -188,7 +195,7 @@ bool SokobanWindow::onKeyPressed(guint keyval, guint keycode, Gdk::ModifierType 
     if(game==nullptr){
         return false;
     }
-    if(!gamePaused){
+    if(!gamePaused && !autoPlay){
         if(keyval==GDK_KEY_Up){
             game->nextTurn(UP);
         }else if(keyval==GDK_KEY_Down){
@@ -345,4 +352,40 @@ void SokobanWindow::readAndImport(){
         Glib::RefPtr<Gtk::AlertDialog> dialog(Gtk::AlertDialog::create("Cannot find input file"));
         dialog->show(*this);
     }
+}
+
+bool SokobanWindow::playNextMoveAutoPlay(){
+    string moves(moveSeqDialog->getSequence());
+    if(moveCntAuto < moves.length()){
+        game->nextTurn(static_cast<MoveType>(moves[moveCntAuto]));
+        updateMap(game->mapToString());
+        moveCntAuto++;
+        return true;
+    }else{
+        // stop auto play
+        moveCntAuto = 0;
+        autoPlay = false;
+        menuButton.set_sensitive(true);
+        exitGame();
+        return false;
+    }
+}
+
+void SokobanWindow::onAutoPlaySeq(){
+    startNewGame();
+    // disable menu btn
+    menuButton.set_sensitive(false);
+    // open dialog asking for sequence to play
+    moveSeqDialog = make_unique<MoveSequenceDialog>();
+    moveSeqDialog->show();
+    moveSeqDialog->signalOkClicked().connect(
+            sigc::mem_fun(*this, &SokobanWindow::launchAutoPlay));
+}
+
+void SokobanWindow::launchAutoPlay(){
+    autoPlay = true;
+    moveSeqDialog->close();
+    // start timeout which call function to move the character
+    Glib::signal_timeout().connect(
+            sigc::mem_fun(*this, &SokobanWindow::onSignalPeriodic), 150); 
 }

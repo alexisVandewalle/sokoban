@@ -29,6 +29,7 @@ set(HEADERS
     ${HEADERS_COMMON}
     ${INCLUDE_DIR}/SokobanWindow.h
     ${INCLUDE_DIR}/ImportMapDialog.h
+    ${INCLUDE_DIR}/MoveSequenceDialog.h
 )
 
 set(MODULES_COMMON
@@ -45,6 +46,7 @@ set(MODULES
     ${MODULES_COMMON}
     ${SRC_DIR}/SokobanWindow.cpp
     ${SRC_DIR}/ImportMapDialog.cpp
+    ${SRC_DIR}/MoveSequenceDialog.cpp
 )
 
 add_executable(sokobanCmdLine ${SRC_DIR}/sokobanCmdLine.cpp ${MODULES_COMMON} ${HEADERS_COMMON})
