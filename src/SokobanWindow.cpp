@@ -9,7 +9,6 @@
 #include <fstream>
 #include "ImportMapDialog.h"
 #include "SokoParser.h"
-#include <thread>
 #include <glibmm/main.h>
 
 using namespace soko;
@@ -387,5 +386,5 @@ void SokobanWindow::launchAutoPlay(){
     moveSeqDialog->close();
     // start timeout which call function to move the character
     Glib::signal_timeout().connect(
-            sigc::mem_fun(*this, &SokobanWindow::onSignalPeriodic), 150); 
+            sigc::mem_fun(*this, &SokobanWindow::playNextMoveAutoPlay), 150); 
 }
