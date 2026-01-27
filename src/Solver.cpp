@@ -7,17 +7,17 @@
 using namespace std;
 using namespace soko;
 
-Solver::Solver(Map& map) : startNode(map), mIsSolve(false){
+Solver::Solver(Map& map) : mIsSolve(false){
+    startNode = make_shared<NodeMap>(map);
 }
 
 void Solver::run(){
     unordered_set<shared_ptr<NodeMap>, NodeMapHasher, NodeMapKeyEqual> visitedNode;
     queue<shared_ptr<NodeMap>> nodeToVisit;
     vector<MoveType> moves = {LEFT,RIGHT,DOWN,UP};
-    shared_ptr<NodeMap> startNodePtr = make_shared<NodeMap>(startNode);
     // init list of nodes to visit
-    nodeToVisit.push(startNodePtr);
-    if(startNode.isWin()){
+    nodeToVisit.push(startNode);
+    if(startNode->isWin()){
         nbVisitedNode = visitedNode.size();
         mIsSolve = true;
         solution = "";
@@ -25,7 +25,7 @@ void Solver::run(){
     }
     for(; !nodeToVisit.empty(); nodeToVisit.pop()){
         for(int i=0; i< moves.size(); i++){
-            shared_ptr<NodeMap> nextNode = make_shared<NodeMap>(*nodeToVisit.front(), moves[i]);
+            shared_ptr<NodeMap> nextNode = make_shared<NodeMap>(nodeToVisit.front(), moves[i]);
             if(nextNode->isWin()){
                 nbVisitedNode = visitedNode.size();
                 mIsSolve = true;

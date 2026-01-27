@@ -14,10 +14,10 @@ namespace soko
      * A class to represent a node in a graph of maps.
      * This class is used by the solver to find the shortest path to a solution
      */
-    class NodeMap
+    class NodeMap : public enable_shared_from_this<NodeMap>
     {
         private:
-            NodeMap* parent;
+            shared_ptr<NodeMap> parent;
             unique_ptr<Map> map;
             MoveType move;
         public:
@@ -26,7 +26,7 @@ namespace soko
              * @param aParent parent of the node to create
              * @param move to perform
              */
-            NodeMap(NodeMap& aParent, MoveType m);
+            NodeMap(shared_ptr<NodeMap> aParent, MoveType m);
 
             /**
              * Construct a node given an input map. Parent node is set to null

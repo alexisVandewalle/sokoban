@@ -4,8 +4,8 @@
 using namespace std;
 using namespace soko;
 
-NodeMap::NodeMap(NodeMap& aParent, MoveType m){
-    this->parent = &aParent;
+NodeMap::NodeMap(shared_ptr<NodeMap> aParent, MoveType m){
+    this->parent = aParent;
     if(parent!=nullptr){
         // create a copy of the parent's map and perform a move
         map = make_unique<Map>(*(parent->map));
@@ -32,7 +32,7 @@ bool NodeMap::operator==(const NodeMap& n2) const {
 
 string NodeMap::getMoveSeq(){
     string out;
-    NodeMap* currentNode = this;
+    shared_ptr<NodeMap> currentNode = shared_from_this();
     while(currentNode->parent!=nullptr){
         out = static_cast<char>(currentNode->move) + out;
         currentNode = currentNode->parent;
