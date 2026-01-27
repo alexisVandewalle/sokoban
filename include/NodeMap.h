@@ -60,6 +60,11 @@ namespace soko
              * Indicate if the game is won at this node
              */
             bool isWin() { return map->isWin(); };
+
+            /**
+             * Return true if the map cannot be solved anymore
+             */
+            bool mapLocked() { return map->mapLocked(); };
     };
 
     struct NodeMapHasher {

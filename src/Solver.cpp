@@ -18,6 +18,7 @@ void Solver::run(){
     // init list of nodes to visit
     nodeToVisit.push(startNodePtr);
     if(startNode.isWin()){
+        nbVisitedNode = visitedNode.size();
         mIsSolve = true;
         solution = "";
         return; 
@@ -26,11 +27,12 @@ void Solver::run(){
         for(int i=0; i< moves.size(); i++){
             shared_ptr<NodeMap> nextNode = make_shared<NodeMap>(*nodeToVisit.front(), moves[i]);
             if(nextNode->isWin()){
+                nbVisitedNode = visitedNode.size();
                 mIsSolve = true;
                 solution = nextNode->getMoveSeq();
                 return;
             }
-            if(visitedNode.count(nextNode) == 0){
+            if(visitedNode.count(nextNode) == 0 && !nextNode->mapLocked()){
                 visitedNode.insert(nextNode);
                 nodeToVisit.push(nextNode);
             }
@@ -44,4 +46,8 @@ bool Solver::isSolve(){
 
 string Solver::getSolution(){
     return solution;
+}
+
+long Solver::getNbVisitedNode() const{
+    return nbVisitedNode;
 }

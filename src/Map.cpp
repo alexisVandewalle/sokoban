@@ -327,3 +327,35 @@ size_t Map::getHash() const{
     string s(map.begin(), map.end());
     return hasher(s);
 }
+
+bool Map::mapLocked() const {
+    for(int i=0; i<map.size(); i++){
+        BlockType b = map[i];
+        if(b==BOX){
+            int k = i/nCol;
+            int l = i%nCol;
+            vector<BlockType> bNext(4, WALL);
+            if(l-1 >= 0){
+                bNext[0] = map[k*nCol+l-1];
+            }
+            if(l+1 < nCol){
+                bNext[1] = map[k*nCol+l+1];
+            }
+            if(k-1 >= 0){
+                bNext[2] = map[(k-1)*nCol+l];
+            }
+            if(k+1 < nLines){
+                bNext[3] = map[(k+1)*nCol+l];
+            }
+            if(bNext[0]==WALL && bNext[2]==WALL)
+                return true;
+            if(bNext[0]==WALL && bNext[3]==WALL)
+                return true;
+            if(bNext[1]==WALL && bNext[2]==WALL)
+                return true;
+            if(bNext[1]==WALL && bNext[3]==WALL)
+                return true;
+        }
+    }
+    return false;
+}

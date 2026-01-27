@@ -17,6 +17,7 @@ namespace soko
             NodeMap startNode;
             bool mIsSolve;
             string solution;
+            long nbVisitedNode;
         public:
             /**
              * Construct a solver given an input map
@@ -35,6 +36,11 @@ namespace soko
             /** Return solution to the problem
              */
             string getSolution();
+
+            /**
+             * Return number of visited nodes
+             */
+            long getNbVisitedNode() const;
     };
 }
 
