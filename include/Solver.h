@@ -14,7 +14,7 @@ namespace soko
     class Solver
     {
         private:
-            NodeMap startNode;
+            shared_ptr<NodeMap> startNode;
             bool mIsSolve;
             string solution;
             long nbVisitedNode;

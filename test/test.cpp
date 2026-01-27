@@ -206,8 +206,8 @@ int test::testNodeMap(int argc, char* argv[]){
 
     Map m1(ss);
     shared_ptr<NodeMap> n1 = make_shared<NodeMap>(m1);
-    shared_ptr<NodeMap> n2 = make_shared<NodeMap>(*n1, LEFT);
-    shared_ptr<NodeMap> n3 = make_shared<NodeMap>(*n2, LEFT);
+    shared_ptr<NodeMap> n2 = make_shared<NodeMap>(n1, LEFT);
+    shared_ptr<NodeMap> n3 = make_shared<NodeMap>(n2, LEFT);
     // test getMoveSeq is working
     assert(n3->getMoveSeq()=="HH");
     cout << n3->getMoveSeq() << endl;
