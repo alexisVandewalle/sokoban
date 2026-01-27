@@ -255,6 +255,32 @@ int test::testSokobanSolver(int argc, char* argv[]){
     return EXIT_SUCCESS; 
 }
 
+int test::testMapLocked(int argc, char* argv[]){
+    stringstream ss;
+    ss << "#####" << "\n";
+    ss << "#   #" << "\n";
+    ss << "#@.$#" << "\n";
+    ss << "#####" << "\n";
+    ss << "\n";
+    ss << "title:test";
+
+    Map m1(ss);
+    assert(m1.mapLocked());
+
+
+    stringstream ss2;
+    ss << "#####" << "\n";
+    ss << "# . #" << "\n";
+    ss << "#@$ #" << "\n";
+    ss << "#####" << "\n";
+    ss << "\n";
+    ss << "title:test";
+
+    Map m2(ss2);
+    assert(!m2.mapLocked());
+    return EXIT_SUCCESS;
+}
+
 void test::printHelp(string& progName){
     cout << "This is the program to launch test for the sokoban application" << endl;
     cout << "Usage: " << progName << " testName" << endl;
@@ -266,6 +292,7 @@ void test::printHelp(string& progName){
     cout << " * testCopyHashMap" << endl;
     cout << " * testNodeMap" << endl;
     cout << " * testSokobanSolver" << endl;
+    cout << " * testMapLocked" << endl;
 }
 
 int main(int argc, char* argv[]){
@@ -299,6 +326,9 @@ int main(int argc, char* argv[]){
     }else if(arg=="testSokobanSolver"){
         cout << "Executing " << arg << endl;
         return testSokobanSolver(argc-1, argv+1); 
+    }else if(arg=="testMapLocked"){
+        cout << "Executing " << arg << endl;
+        return testMapLocked(argc-1, argv+1); 
     }else{
         cerr << "Unknown test name" << endl;
         return EXIT_FAILURE;

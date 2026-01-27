@@ -19,6 +19,7 @@ int main(int argc, char**argv){
     if(s.isSolve()){
         cout << "Solution found to sokoban map" << endl;
         cout << " * solution:" << s.getSolution() << endl;
+        cout << " * number of visited nodes:" << s.getNbVisitedNode() << endl;
     }else{
         cout << "No solution found - map impossible to solve" << endl;
         return EXIT_FAILURE;

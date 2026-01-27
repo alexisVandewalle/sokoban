@@ -37,6 +37,13 @@ TEST_STATUS=$?
 REPORT="${REPORT}\n${TEST_NAME}: ${TEST_STATUS}"
 echo "${SEPARATOR}"
 
+TEST_NAME=testMapLocked
+echo "${SEPARATOR}"
+${BUILD_PATH}/test $TEST_NAME
+TEST_STATUS=$?
+REPORT="${REPORT}\n${TEST_NAME}: ${TEST_STATUS}"
+echo "${SEPARATOR}"
+
 echo "==========================="
 echo "        TEST REPORT        "
 echo "==========================="

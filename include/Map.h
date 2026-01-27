@@ -135,6 +135,12 @@ namespace soko
              * The hash is computed from its string representation.
              */
             size_t getHash() const;
+
+            /**
+             * Returns true if it is impossible to win. It does not tests all possible cases.
+             * It only check if a box is in a corner.
+             */
+            bool mapLocked() const;
     };
 
     enum MoveStatus

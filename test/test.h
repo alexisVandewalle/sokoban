@@ -59,6 +59,11 @@ namespace test
      * works applying the moves one by one.
      */
     int testSokobanSolver(int argc, char* argv[]);
+
+    /**
+     * Test the function to detect if a map cannot be solved anymore
+     */
+    int testMapLocked(int argc, char* argv[]);
 }
 
 #endif /* TEST_H */
